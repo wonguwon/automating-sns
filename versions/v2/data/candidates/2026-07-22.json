@@ -1,0 +1,47 @@
+[
+  {
+    "id": "20260722-01",
+    "title": "전 국민 무료 국산 AI 서비스 ‘모두의 AI’ 윤곽 공개",
+    "one_line": "정부가 전 국민이 무료로 쓸 수 있는 국산 AI 챗봇·공공 AI 에이전트 서비스의 지원 요건과 출시 일정을 공개했다.",
+    "why_now": "7월 21일 과기정통부·NIPA 사업설명회에서 9월 베타, 12월 정식 출시 일정과 무료 서비스 범위가 구체화됐다.",
+    "angle": "“회사에서 챗GPT 대신 무료 국산 AI를 쓰게 될까?” 직장인이 알아둘 변화 5가지",
+    "source": "https://www.aitimes.com/news/articleView.html?idxno=213013",
+    "visual": "출시 일정·무료 범위·예상 활용처를 타임라인과 표로 정리하면 5장 구성 쉬움"
+  },
+  {
+    "id": "20260722-02",
+    "title": "KT, AI 안경 ‘레이밴 메타’ 국내 출시",
+    "one_line": "KT가 음성 명령으로 검색·번역 등을 할 수 있는 메타의 AI 안경 ‘레이밴 메타 Gen2’를 국내에 출시한다.",
+    "why_now": "7월 22일 국내 출시 소식으로, 해외 AI 웨어러블을 한국 소비자가 실제 구매·사용할 수 있게 되는 사례다.",
+    "angle": "“회의·출장·외근 때 AI 안경이 쓸모 있을까?” 직장인 사용 시나리오 4가지",
+    "source": "https://www.aitimes.kr/news/articleView.html?idxno=41075",
+    "visual": "안경 기능을 일상 업무 장면별 아이콘으로 보여주기 좋아 시각화 쉬움"
+  },
+  {
+    "id": "20260722-03",
+    "title": "광고 성과, 이제 AI에게 말로 물어본다",
+    "one_line": "데이블이 챗GPT·클로드 같은 AI 비서에 광고 계정을 연결해 ‘이번 달 성과 정리해줘’처럼 묻는 MCP 기반 광고 연동 기능을 공개했다.",
+    "why_now": "7월 21일 국내 애드테크 기업이 실제 업무 리포팅 과정을 AI 비서 안으로 옮기는 기능을 선보였다.",
+    "angle": "“엑셀 리포트 뽑기 전에 AI에게 물어보는 시대” 마케터 업무가 줄어드는 지점",
+    "source": "https://www.aitimes.kr/news/articleView.html?idxno=41073",
+    "visual": "기존 리포트 작업 흐름 vs AI 질문 흐름 비교표로 명확하게 표현 가능"
+  },
+  {
+    "id": "20260722-04",
+    "title": "OpenAI, 소상공인·중소기업용 ChatGPT 프로그램 출시",
+    "one_line": "OpenAI가 소규모 사업자가 ChatGPT Work로 업무 자동화와 AI 활용 역량을 키울 수 있도록 돕는 ‘ChatGPT for Small Business’ 프로그램을 내놨다.",
+    "why_now": "OpenAI가 공식 발표한 신규 프로그램으로, AI 도입이 대기업 전유물이 아니라 중소기업·자영업 업무로 확산되는 흐름을 보여준다.",
+    "angle": "“우리 회사도 AI 담당자 없이 시작할 수 있을까?” 비개발자용 자동화 아이디어 3가지",
+    "source": "https://openai.com/index/introducing-chatgpt-small-business-program",
+    "visual": "고객응대·문서작성·마케팅 자동화 예시를 카드별로 나누면 구성 쉬움"
+  },
+  {
+    "id": "20260722-05",
+    "title": "가트너 “AI 지출 급증, 이제 ROI 검증이 승부처”",
+    "one_line": "가트너는 2026년 전 세계 AI 모델·플랫폼 지출이 크게 늘고, 기업의 AI 비용 통제와 투자 대비 효과 검증이 중요해질 것이라고 전망했다.",
+    "why_now": "7월 21일 발표된 가트너 전망으로, 기업들이 AI를 ‘일단 써보는 단계’에서 예산·성과 관리 단계로 넘어가고 있음을 보여준다.",
+    "angle": "“AI 구독료만 늘고 성과는 모르겠다면?” 팀장이 체크할 AI ROI 질문 5개",
+    "source": "https://www.aitimes.com/news/articleView.html?idxno=212990",
+    "visual": "AI 비용 증가 그래프와 ROI 체크리스트 조합으로 카드뉴스화 무리 없음"
+  }
+]

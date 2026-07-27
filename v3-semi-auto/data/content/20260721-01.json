@@ -1,0 +1,51 @@
+{
+  "id": "20260721-01",
+  "brand": "칼퇴각",
+  "handle": "@kaltoegak",
+  "hook_reel": "AI 자료, 그냥 쓰면 위험",
+  "cover": {
+    "headline": "AI에 넣는 자료\n이제 점검할 때",
+    "lede": "15억 달러 합의가 최종 승인됐습니다",
+    "image_concept": "조용한 도서관 서가 앞, 책 더미와 노트북을 사이에 두고 한 사람이 자료를 조심스럽게 살펴보는 장면. 빠른 AI 활용과 저작권 점검 사이의 긴장이 드러나는 신중하고 차분한 분위기",
+    "image": "file:///C:/Users/user1/Documents/kaltoegak/assets/cover-20260721-01.png"
+  },
+  "slides": [
+    {
+      "eyebrow": "무엇이 결정됐나",
+      "headline": "AI 학습 저작권 분쟁이\n<span class='hl'>15억 달러</span> 합의로 갔습니다",
+      "lede": "도서 무단 활용 집단소송의 최종 승인입니다.",
+      "source": "https://www.aitimes.com/news/articleView.html?idxno=212995"
+    },
+    {
+      "eyebrow": "왜 중요한가",
+      "headline": "이제 쟁점은\nAI가 배운 자료입니다",
+      "points": [
+        "도서 무단 활용이 핵심입니다",
+        "집단소송으로 다뤄졌습니다"
+      ],
+      "source": "https://www.aitimes.com/news/articleView.html?idxno=212995"
+    },
+    {
+      "eyebrow": "오늘 할 수 있는 일",
+      "headline": "마케팅·교육자료부터\n리스크를 줄이세요",
+      "points": [
+        "AI 저작권 리스크를 점검하세요",
+        "교육자료 리스크도 함께 보세요"
+      ],
+      "source": "https://www.aitimes.com/news/articleView.html?idxno=212995"
+    }
+  ],
+  "cta": {
+    "headline": "AI 쓰기 전\n자료부터 확인하세요",
+    "lede": "마케팅·교육자료 만들 때 먼저 점검하세요.",
+    "image": null
+  },
+  "caption": "AI 저작권 이슈가 실제 합의로 이어졌습니다.\n\n앤트로픽은 도서 무단 활용 관련 저작권 집단소송에서 15억 달러 규모 합의를 최종 승인받았습니다.\n\n직장인 AI 활용에서도 중요한 포인트는 분명합니다. 마케팅 자료나 교육자료를 만들 때, 결과물만 볼 게 아니라 어떤 자료를 AI에 쓰는지도 함께 봐야 합니다.\n\n업무에 AI를 쓰는 동료에게 공유하고, 나중에 점검할 때 보려고 저장해두세요.",
+  "hashtags": [
+    "직장인AI",
+    "AI저작권",
+    "마케팅자료",
+    "교육자료",
+    "칼퇴각"
+  ]
+}

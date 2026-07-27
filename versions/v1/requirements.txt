@@ -1,0 +1,7 @@
+streamlit
+openai
+python-dotenv
+# Render.py가 subprocess로 같은 인터프리터에서 실행되며 playwright가 필요하다.
+playwright
+# 5단계(릴스 생성)는 Render_reel.py를 통해 ffmpeg 바이너리를 호출한다.
+# pip 패키지가 아니라 시스템에 별도 설치 필요: https://ffmpeg.org (PATH 등록 필수)

@@ -1,0 +1,68 @@
+{
+  "id": "20260722-01",
+  "brand": "칼퇴각",
+  "handle": "@kaltoegak",
+  "hook_reel": "AI 안경 월 1만6천원대",
+  "cover": {
+    "headline": "안경에\nAI가 들어왔습니다",
+    "lede": "KT가 22일 레이밴 메타 Gen2 출시를 밝혔습니다",
+    "image_concept": "통신 매장 체험존, 진열대 앞에서 안경을 써보는 사람과 평범한 안경을 고르는 사람이 대비되는 장면. 손에 든 스마트폰 대신 시선으로 정보를 얻는 변화가 느껴지는 밝고 낯선 분위기",
+    "image": "file:///C:/Users/user1/Documents/kaltoegak/assets/cover-20260722-01.png"
+  },
+  "slides": [
+    {
+      "eyebrow": "무엇이 나왔나",
+      "headline": "이제 안경 후보에\nAI가 추가됩니다",
+      "lede": "에실로룩소티카와 메타가 공동 개발한 제품입니다.",
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41075"
+    },
+    {
+      "eyebrow": "무엇을 해주나",
+      "headline": "말로 부르면\n묻고 찾습니다",
+      "lede": "“헤이, 메타”로 질문 답변, 검색, 추천을 받을 수 있습니다.",
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41075"
+    },
+    {
+      "eyebrow": "기록 방식",
+      "headline": "눈앞 장면을\n<span class='hl'>3K 영상</span>으로 남깁니다",
+      "lede": "1,200만 화소 초광각 카메라로 사진과 영상을 촬영합니다.",
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41075"
+    },
+    {
+      "eyebrow": "배터리",
+      "headline": "한 번 충전해\n최대 <span class='hl'>8시간</span>",
+      "lede": "충전 케이스를 함께 쓰면 최장 48시간까지 이용할 수 있습니다.",
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41075"
+    },
+    {
+      "eyebrow": "가격은",
+      "headline": "구매 전 가격은\n<span class='hl'>월 1만6천원대</span>",
+      "points": [
+        "요고69 디바이스 B형 선택 시",
+        "KT 멤버십 고객 10% 할인"
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41075"
+    },
+    {
+      "eyebrow": "어디서 보나",
+      "headline": "직접 써볼 곳도\n늘어납니다",
+      "points": [
+        "8월 3일부터 일반 대리점 확대",
+        "전국 11개 매장 체험존 운영"
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41075"
+    }
+  ],
+  "cta": {
+    "headline": "사기 전엔\n업무 장면부터 떠올리세요",
+    "lede": "촬영·검색·추천이 내 일에 필요한지 먼저 체크하세요.",
+    "image": null
+  },
+  "caption": "스마트폰을 꺼내기 전에, 안경에게 먼저 묻는 장면이 가까워졌습니다.\n\nKT가 레이밴 메타 Gen2 출시를 밝혔습니다. 직장인 AI 기기로 보면 핵심은 세 가지입니다. 말로 질문하고, 눈앞 장면을 촬영하고, 충전 케이스까지 쓰면 최장 48시간 이용할 수 있다는 점입니다.\n\n가격은 조건에 따라 24개월 기준 월 1만6천원대까지 내려가고, 8월 3일부터는 일반 대리점 판매도 확대됩니다.\n\n웨어러블 AI가 내 업무에 맞을지 비교해보고 싶다면 저장해두고 공유해보세요.",
+  "hashtags": [
+    "직장인AI",
+    "AI안경",
+    "웨어러블AI",
+    "칼퇴각"
+  ]
+}

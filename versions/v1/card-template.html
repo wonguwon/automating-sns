@@ -1,0 +1,675 @@
+<meta charset="utf-8">
+<title>칼퇴각 · 카드 템플릿 v2</title>
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+
+<style>
+/* ============================================================
+   칼퇴각 — 카드 템플릿 v2
+   한 파일에서 4:5(캐러셀)와 9:16(스토리/릴스 소재)을 모두 렌더한다.
+
+   v1 대비 변경점
+     - 표지에 이미지 배경 + 그라디언트 스크림 레이어 (이미지 없으면 코발트 폴백)
+     - JSON 스키마를 파이프라인 최종 형태로 고정 (CONTENT 객체 참고)
+     - 글자수 상한 위반 / 슬라이드 넘침을 화면에 바로 표시
+       → Playwright는 .frame[data-overflow="1"] 이 있으면 렌더 실패 처리할 것
+
+   URL 파라미터
+     ?r=45   또는  ?r=916      비율 선택      (기본 45)
+     &i=0                       슬라이드 인덱스 (기본 0)
+     &mode=preview              전체 슬라이드 한 눈에 보기
+
+   Playwright는 body[data-ready="1"]을 기다린 뒤 캡처할 것.
+   ============================================================ */
+
+:root{
+  --field:  #1B3FE0;
+  --field-2:#1230B8;
+  --paper:  #FFFFFF;
+  --ink:    #0A0A0F;
+  --mute:   #5B5F6B;
+  --signal: #E4FF3E;
+  --signal-2:#C7E600;
+  --white:  #FFFFFF;
+  --danger: #E0293F;
+  --line:   rgba(10,10,15,.10);
+
+  --display: 'GmarketSansBold', 'Pretendard', -apple-system, sans-serif;
+  --body:    'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  --util:    'GmarketSansMedium', 'Pretendard', sans-serif;
+
+  --fw: 1080px;
+  --fh: 1350px;
+  --pad: 88px;
+  --safe-bottom: 0px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+body{
+  background:#20242C;
+  font-family:var(--body);
+  -webkit-font-smoothing:antialiased;
+  display:flex; justify-content:center; align-items:flex-start;
+}
+
+.frame{
+  position:relative;
+  width:var(--fw); height:var(--fh);
+  overflow:hidden;
+  background:var(--paper);
+  color:var(--ink);
+  display:flex; flex-direction:column;
+  padding:var(--pad);
+  padding-bottom:calc(var(--pad) + var(--safe-bottom));
+  flex:0 0 auto;
+}
+
+.frame[data-tone="field"] { background:var(--field);  color:var(--white); }
+.frame[data-tone="signal"]{ background:var(--signal); color:var(--ink);  }
+
+/* ---------- 표지 이미지 레이어 ----------
+   image 가 있으면: 사진 + 하단 스크림 위에 텍스트
+   image 가 없으면: 메인컬러 단색 (자동 폴백, 파이프라인이 멈추지 않게) */
+.bg-photo{
+  position:absolute; inset:0;
+  background-size:cover; background-position:center;
+  z-index:0;
+}
+.bg-scrim{
+  position:absolute; inset:0;
+  background:linear-gradient(180deg,
+    rgba(6,8,16,.05) 0%,
+    rgba(6,8,16,.10) 38%,
+    rgba(6,8,16,.62) 68%,
+    rgba(6,8,16,.96) 100%);
+  z-index:1;
+}
+.frame[data-has-photo="1"] .top,
+.frame[data-has-photo="1"] .bodyc,
+.frame[data-has-photo="1"] .foot{ position:relative; z-index:2; color:var(--white); }
+.frame[data-has-photo="1"] .eyebrow{ background:var(--signal); color:var(--ink); }
+
+/* ---------- 시그니처: 하단 페이지네이션 (도트 + 스와이프 화살표) ----------
+   본문(bodyc) 아래 정상 흐름에 배치 — 헤드라인/포인트와 절대 겹치지 않음 */
+.pager{
+  display:flex; justify-content:center; align-items:center;
+  gap:16px; margin-top:22px;
+}
+.pager .dots{ display:flex; align-items:center; gap:9px; }
+.pager .dots i{
+  display:block; width:7px; height:7px; border-radius:50%;
+  background:rgba(10,10,15,.18);
+}
+.pager .dots i[data-active="1"]{ width:22px; border-radius:4px; background:var(--ink); }
+.frame[data-tone="field"] .pager .dots i,
+.frame[data-has-photo="1"] .pager .dots i{ background:rgba(255,255,255,.32); }
+.frame[data-tone="field"] .pager .dots i[data-active="1"],
+.frame[data-has-photo="1"] .pager .dots i[data-active="1"]{ background:var(--signal); }
+.frame[data-tone="signal"] .pager .dots i{ background:rgba(10,10,15,.22); }
+.frame[data-tone="signal"] .pager .dots i[data-active="1"]{ background:var(--ink); }
+
+.navdot{
+  flex:0 0 auto;
+  width:38px; height:38px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(10,10,15,.06);
+  color:var(--ink);
+  font:800 20px var(--util);
+}
+.frame[data-tone="field"] .navdot,
+.frame[data-has-photo="1"] .navdot{ background:rgba(255,255,255,.16); color:var(--white); }
+.frame[data-tone="signal"] .navdot{ background:rgba(10,10,15,.10); color:var(--ink); }
+
+/* ---------- 머리말 ---------- */
+.top{
+  display:flex; justify-content:space-between; align-items:baseline;
+  font-family:var(--util); font-weight:700;
+  font-size:26px; letter-spacing:.02em;
+  opacity:.85;
+  padding-bottom:22px; margin-bottom:6px;
+  border-bottom:1px solid var(--line);
+}
+.frame[data-tone="field"] .top,
+.frame[data-tone="signal"] .top,
+.frame[data-has-photo="1"] .top{ opacity:.9; }
+.frame[data-tone="signal"] .top{ border-bottom-color:rgba(10,10,15,.18); }
+.frame[data-has-photo="1"] .top{ border-bottom-color:rgba(255,255,255,.22); }
+
+/* ---------- 본체 ---------- */
+.bodyc{
+  flex:1;
+  display:flex; flex-direction:column; justify-content:center;
+  gap:38px;
+  padding-right:24px;
+}
+.frame[data-ratio="916"] .bodyc{ justify-content:flex-start; padding-top:130px; }
+.frame[data-has-photo="1"] .bodyc{ justify-content:flex-end; padding-bottom:12px; }
+
+.eyebrow{
+  display:inline-block;
+  font-family:var(--util); font-weight:800;
+  font-size:30px; letter-spacing:.02em;
+  color:var(--ink);
+  background:var(--signal);
+  padding:.14em .5em; border-radius:999px;
+  width:fit-content;
+}
+.frame[data-tone="field"]  .eyebrow{ background:var(--signal); color:var(--ink); }
+.frame[data-tone="signal"] .eyebrow{ background:var(--ink);    color:var(--signal); }
+
+.headline{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:104px; line-height:1.16; letter-spacing:-.026em;
+  word-break:keep-all;
+}
+.frame[data-ratio="916"] .headline{ font-size:112px; }
+.headline.sm{ font-size:76px; }
+
+.lede{
+  font-size:42px; line-height:1.58; font-weight:500;
+  word-break:keep-all;
+  color:var(--mute);
+  max-width:88%;
+}
+.frame[data-tone="field"] .lede,
+.frame[data-has-photo="1"] .lede{ color:rgba(255,255,255,.86); }
+.frame[data-tone="signal"] .lede{ color:rgba(10,10,15,.72); }
+
+/* ---------- 본문 문단(beats) — lede보다 여러 문장을 담는 본문 블록 ---------- */
+.beats{ display:flex; flex-direction:column; gap:22px; margin-top:8px; max-width:92%; }
+.beat{
+  font-size:38px; line-height:1.55; font-weight:500;
+  word-break:keep-all;
+  color:var(--mute);
+}
+.frame[data-tone="field"] .beat,
+.frame[data-has-photo="1"] .beat{ color:rgba(255,255,255,.86); }
+.frame[data-tone="signal"] .beat{ color:rgba(10,10,15,.72); }
+
+/* ---------- 강조 바 + eyebrow 묶음 (bodyc의 38px gap과 별도로 붙어 있어야 해서 한 덩어리로 감쌈) ---------- */
+.kicker{ display:flex; flex-direction:column; align-items:flex-start; gap:10px; }
+.accent-bar{ width:56px; height:6px; border-radius:3px; background:var(--ink); }
+.frame[data-tone="field"] .accent-bar,
+.frame[data-has-photo="1"] .accent-bar{ background:var(--signal); }
+.frame[data-tone="signal"] .accent-bar{ background:var(--ink); }
+
+.hl{
+  background:var(--ink); color:var(--signal);
+  padding:.04em .22em; border-radius:4px; font-weight:700;
+}
+.frame[data-tone="field"] .hl,
+.frame[data-has-photo="1"] .hl{ background:var(--signal); color:var(--ink); }
+.frame[data-tone="signal"] .hl{ background:var(--ink); color:var(--signal); }
+
+.points{ display:flex; flex-direction:column; gap:26px; margin-top:8px; }
+.point{ display:flex; gap:26px; align-items:flex-start; }
+.point-num{
+  flex:0 0 auto;
+  width:50px; height:50px; margin-top:2px;
+  border-radius:14px;
+  background:var(--ink); color:var(--signal);
+  font-family:var(--util); font-weight:800; font-size:26px;
+  display:flex; align-items:center; justify-content:center;
+}
+.frame[data-tone="signal"] .point-num{ background:var(--ink); color:var(--signal); }
+.point-text{ font-size:38px; line-height:1.5; font-weight:500; word-break:keep-all; padding-top:4px; }
+
+/* ---------- 정리(roadmap) 슬라이드 — type:"list" ---------- */
+.roadmap{ display:flex; flex-direction:column; gap:20px; margin-top:8px; }
+.roadmap-item{
+  display:flex; gap:24px; align-items:flex-start;
+  padding-bottom:20px; border-bottom:1px solid var(--line);
+}
+.roadmap-item:last-child{ border-bottom:none; padding-bottom:0; }
+.frame[data-tone="field"] .roadmap-item,
+.frame[data-has-photo="1"] .roadmap-item{ border-bottom-color:rgba(255,255,255,.22); }
+.frame[data-tone="signal"] .roadmap-item{ border-bottom-color:rgba(10,10,15,.18); }
+
+.roadmap-body{ display:flex; flex-direction:column; gap:4px; padding-top:2px; }
+.roadmap-title{
+  font-family:var(--display); font-weight:800;
+  font-size:36px; line-height:1.25; word-break:keep-all;
+}
+.roadmap-desc{
+  font-size:28px; line-height:1.4; font-weight:500;
+  word-break:keep-all; color:var(--mute);
+}
+.frame[data-tone="field"] .roadmap-desc,
+.frame[data-has-photo="1"] .roadmap-desc{ color:rgba(255,255,255,.86); }
+.frame[data-tone="signal"] .roadmap-desc{ color:rgba(10,10,15,.72); }
+
+/* ---------- 전후 비교 슬라이드 — type:"compare" ---------- */
+.compare{ display:flex; gap:20px; margin-top:8px; }
+.compare-box{
+  flex:1; border-radius:20px; padding:32px 28px;
+  display:flex; flex-direction:column; gap:14px;
+}
+.compare-box.before{ background:rgba(10,10,15,.05); border:1px solid var(--line); }
+.compare-box.after{ background:var(--ink); color:var(--paper); }
+
+.frame[data-tone="field"] .compare-box.before,
+.frame[data-has-photo="1"] .compare-box.before{ background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.22); }
+.frame[data-tone="signal"] .compare-box.before{ background:rgba(10,10,15,.06); }
+
+.compare-label{
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--util); font-weight:800; font-size:24px; letter-spacing:.02em;
+}
+.compare-icon{
+  width:28px; height:28px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; font-size:18px;
+}
+.compare-box.before .compare-icon{ background:rgba(10,10,15,.12); color:var(--ink); }
+.compare-box.after  .compare-icon{ background:var(--signal); color:var(--ink); }
+
+.compare-text{ font-size:34px; line-height:1.4; font-weight:600; word-break:keep-all; }
+
+.compare-delta{
+  margin-top:22px; font-family:var(--display); font-weight:800;
+  font-size:56px; line-height:1.2; text-align:center; word-break:keep-all;
+}
+
+/* ---------- 본문 근거 이미지(evidence) — 표지/CTA의 풀블리드 사진과 별개 컴포넌트 ---------- */
+.evidence{
+  margin-top:20px; border-radius:24px; overflow:hidden;
+  border:1px solid var(--line); max-height:460px;
+}
+.evidence img{ width:100%; height:100%; object-fit:cover; display:block; }
+.evidence-cap{
+  margin-top:10px; font-size:24px; font-weight:600;
+  color:var(--mute); word-break:keep-all;
+}
+.frame[data-tone="field"] .evidence{ border-color:rgba(255,255,255,.22); }
+.frame[data-tone="field"] .evidence-cap{ color:rgba(255,255,255,.86); }
+.frame[data-tone="signal"] .evidence-cap{ color:rgba(10,10,15,.72); }
+
+/* ---------- 꼬리말 ---------- */
+.foot{
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:var(--util); font-weight:600; font-size:24px;
+  opacity:.68;
+}
+.src-pill{
+  display:inline-flex; align-items:center; gap:6px;
+  border:1px solid currentColor; border-radius:999px;
+  padding:.3em .85em; opacity:.9;
+}
+.cta-btn{
+  align-self:flex-end;
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--ink); color:var(--signal);
+  font-family:var(--util); font-weight:800; font-size:30px;
+  padding:.5em 1em; border-radius:999px;
+  margin-top:26px;
+}
+
+/* ---------- 검증 배지 (Playwright가 감지할 실패 신호) ---------- */
+.warn-badge{
+  position:absolute; top:24px; right:24px; z-index:5;
+  background:var(--danger); color:#fff;
+  font:700 20px var(--util);
+  padding:10px 18px; border-radius:8px;
+  display:none;
+}
+.frame[data-overflow="1"] .warn-badge{ display:block; }
+
+/* ---------- 미리보기 ---------- */
+.preview{ display:flex; flex-wrap:wrap; gap:28px; padding:36px; align-items:flex-start; }
+.thumb{ transform-origin:top left; }
+.label{ color:#8A93A6; font:600 13px var(--body); margin:0 0 8px 2px; letter-spacing:.04em; }
+.label.bad{ color:var(--danger); font-weight:800; }
+</style>
+
+<body></body>
+
+<script>
+/* ============================================================
+   콘텐츠 스키마 (v3) — 플로우2 산출물이 그대로 들어오는 자리.
+   ============================================================
+
+   슬라이드 type (본문 slides[] 항목에만 적용, 생략 시 "default")
+     "default" : eyebrow + headline + (beats 그리고/또는 points)
+     "list"    : eyebrow + headline + (list_intro) + items[] — 정리/로드맵 슬라이드
+     "compare" : eyebrow + headline + compare{before,after} + (delta) — 전후 비교 슬라이드
+
+   상한 규칙 (어기면 렌더 경고 배지 + 콘솔 에러, 자동화에서는 실패 처리)
+     headline   : 26자 이내 (표지 제외, 안 지키면 자동 축소 폰트로 전환)
+     beats      : 항목당 80자 이내, 슬라이드당 최대 3개, 합계 150자 이내
+                  (구버전 lede는 beats 1개짜리로 자동 취급 — 하위호환)
+     point      : 40자 이내. points만 쓰면 최대 3개, beats와 같이 쓰면 beats 1개+points 2개로 축소
+     list.items : 3~6개. title 18자 이내, desc 50자 이내
+     compare    : before/after.text 60자 이내, label 6자 이내, delta 24자 이내
+     hook_reel  : 20자 이내 (릴스 첫 프레임은 특히 짧아야 함)
+     button_label: 16자 이내
+     slides     : 본문 3~6장 (표지 1 + 본문 3~6 + CTA 1 = 총 5~8장)
+     source     : 본문 슬라이드마다 필수. 없으면 렌더 실패.
+*/
+const LIMITS = {
+  headline:26,
+  beat:80, beatsMax:3, beatsTotal:150,
+  point:40, pointsMaxAlone:3, pointsMaxWithBeats:2, beatsMaxWithPoints:1,
+  hook_reel:20,
+  roadmapTitle:18, roadmapDesc:50, roadmapIntro:50, roadmapItemsMin:3, roadmapItemsMax:6,
+  compareLabel:6, compareText:60, compareDelta:24,
+  buttonLabel:16,
+  lede:70
+};
+
+const CONTENT = window.__EXTERNAL_CONTENT__ || {
+"id": "20260720-01",
+"brand": "칼퇴각",
+"handle": "@kaltoegak",
+"hook_reel": "당신의 긴 문서 업무가 달라집니다",
+"cover": {
+"headline": "당신이 AI에 맡길\n업무 범위가 넓어질 수 있습니다",
+"lede": "제미나이 3.5 프로의 새 기능이 유출됐습니다",
+"image": null
+},
+"slides": [
+{
+"eyebrow": "무엇이 발표됐나",
+"headline": "당신이 한 번에 맡길 분량이\n<span class='hl'>200만 토큰</span>까지 늘어날 수 있습니다",
+"lede": "아직 구글이 공식 확인하지 않은 유출 정보입니다",
+"source": "https://www.aitimes.com/news/articleView.html?idxno=212785"
+},
+{
+"eyebrow": "왜 중요한가",
+"headline": "당신의 AI 선택 기준이\n성능에서 효율까지 넓어집니다",
+"points": [
+"긴 자료를 얼마나 효율적으로 다루는지",
+"추론에 드는 비용을 줄이는지"
+],
+"source": "https://www.aitimes.com/news/articleView.html?idxno=212785"
+},
+{
+"eyebrow": "오늘 할 수 있는 일",
+"headline": "당신이 맡길 긴 문서 업무를\n미리 골라두세요",
+"points": [
+"보고서와 매뉴얼 업무를 추려두세요",
+"출시 후 비용과 결과를 비교하세요"
+],
+"source": "https://www.aitimes.com/news/articleView.html?idxno=212785"
+}
+],
+"cta": {
+"headline": "당신의 업무에서\n직접 확인하고 비교하세요",
+"lede": "공식 발표 뒤 실제 결과와 비용을 확인해보세요", 
+"image": null
+},
+"caption": "AI 모델의 승부처가 최고 점수에서 업무 효율로 옮겨가고 있습니다.\n\n제미나이 3.5 프로에는 최대 200만 토큰의 문맥 처리, 복잡한 문제에 연산을 더 투입하는 딥 싱킹, 향상된 코딩과 에이전트 기능이 거론됩니다. 긴 보고서와 사내 자료를 다루는 직장인 AI 활용에도 영향을 줄 수 있는 변화입니다.\n\n다만 현재 내용은 구글이 공식 확인하지 않은 유출 정보입니다. 출시 후에는 기능 목록보다 내 업무에서 결과가 정확한지, 비용과 토큰 사용량이 합리적인지를 비교해야 합니다.\n\n공식 발표 후 확인할 수 있도록 저장하고, 긴 문서 업무가 많은 동료에게 공유하세요.",
+"hashtags": [
+"직장인AI",
+"제미나이",
+"업무효율",
+"AI트렌드",
+"칼퇴각"
+]
+};
+
+/* ============================================================
+   검증
+   ============================================================ */
+function stripTags(s){ return (s || "").replace(/<[^>]+>/g, ""); }
+
+// 표지/CTA(isEdge)는 항상 한 줄 lede 훅을 유지 — beats 변환 대상이 아니다.
+function slideBeats(s){ return s.isEdge ? [] : (s.beats || (s.lede ? [s.lede] : [])); }
+
+function validate(content){
+  const errs = [];
+  if (stripTags(content.hook_reel).length > LIMITS.hook_reel)
+    errs.push(`hook_reel 초과 (${stripTags(content.hook_reel).length}/${LIMITS.hook_reel}자)`);
+  if (stripTags(content.cover.lede || "").length > LIMITS.lede)
+    errs.push(`cover.lede 초과`);
+  if (content.cta && stripTags(content.cta.lede || "").length > LIMITS.lede)
+    errs.push(`cta.lede 초과`);
+  if (content.cta && content.cta.button_label && stripTags(content.cta.button_label).length > LIMITS.buttonLabel)
+    errs.push(`cta.button_label 초과`);
+  if (content.slides.length < 3 || content.slides.length > 6)
+    errs.push(`본문 슬라이드는 3~6장이어야 함 (현재 ${content.slides.length}장)`);
+
+  content.slides.forEach((s, idx) => {
+    if (!s.source) errs.push(`slide[${idx}] 출처(source) 누락`);
+
+    const type = s.type || "default";
+    if (!["default", "list", "compare"].includes(type))
+      errs.push(`slide[${idx}] 알 수 없는 type: ${type}`);
+
+    const beats = slideBeats(s);
+    const points = s.points || [];
+
+    if (beats.length > LIMITS.beatsMax)
+      errs.push(`slide[${idx}] beats는 최대 ${LIMITS.beatsMax}개`);
+    beats.forEach((b, bi) => {
+      if (stripTags(b).length > LIMITS.beat)
+        errs.push(`slide[${idx}].beats[${bi}] 초과 (${stripTags(b).length}/${LIMITS.beat}자)`);
+    });
+    const beatsTotal = beats.reduce((sum, b) => sum + stripTags(b).length, 0);
+    if (beatsTotal > LIMITS.beatsTotal)
+      errs.push(`slide[${idx}] beats 합계 초과 (${beatsTotal}/${LIMITS.beatsTotal}자)`);
+
+    points.forEach((p, pi) => {
+      if (stripTags(p).length > LIMITS.point) errs.push(`slide[${idx}].points[${pi}] 초과`);
+    });
+    if (beats.length && points.length) {
+      if (beats.length > LIMITS.beatsMaxWithPoints)
+        errs.push(`slide[${idx}] beats+points 조합 시 beats는 ${LIMITS.beatsMaxWithPoints}개까지`);
+      if (points.length > LIMITS.pointsMaxWithBeats)
+        errs.push(`slide[${idx}] beats+points 조합 시 points는 ${LIMITS.pointsMaxWithBeats}개까지`);
+    } else if (points.length > LIMITS.pointsMaxAlone) {
+      errs.push(`slide[${idx}] points는 최대 ${LIMITS.pointsMaxAlone}개`);
+    }
+
+    if (type === "list") {
+      const items = s.items || [];
+      if (items.length < LIMITS.roadmapItemsMin || items.length > LIMITS.roadmapItemsMax)
+        errs.push(`slide[${idx}] list.items는 ${LIMITS.roadmapItemsMin}~${LIMITS.roadmapItemsMax}개`);
+      items.forEach((it, ii) => {
+        if (stripTags(it.title || "").length > LIMITS.roadmapTitle)
+          errs.push(`slide[${idx}].items[${ii}].title 초과`);
+        if (stripTags(it.desc || "").length > LIMITS.roadmapDesc)
+          errs.push(`slide[${idx}].items[${ii}].desc 초과`);
+      });
+      if (s.list_intro && stripTags(s.list_intro).length > LIMITS.roadmapIntro)
+        errs.push(`slide[${idx}] list_intro 초과`);
+    }
+
+    if (type === "compare") {
+      const c = s.compare || {};
+      if (!c.before || !c.after) {
+        errs.push(`slide[${idx}] compare.before / compare.after 필수`);
+      } else {
+        [["before", c.before], ["after", c.after]].forEach(([k, box]) => {
+          if (stripTags(box.label || "").length > LIMITS.compareLabel)
+            errs.push(`slide[${idx}].compare.${k}.label 초과`);
+          if (stripTags(box.text || "").length > LIMITS.compareText)
+            errs.push(`slide[${idx}].compare.${k}.text 초과`);
+        });
+      }
+      if (s.delta && stripTags(s.delta).length > LIMITS.compareDelta)
+        errs.push(`slide[${idx}].delta 초과`);
+    }
+  });
+  return errs;
+}
+
+/* ============================================================
+   렌더
+   ============================================================ */
+const P = new URLSearchParams(location.search);
+const RATIO = P.get("r") === "916" ? "916" : "45";
+const MODE  = P.get("mode");
+
+const SIZES = {
+  "45":  { w:1080, h:1350, pad:88,  safe:0   },
+  "916": { w:1080, h:1920, pad:96,  safe:430 }
+};
+
+function buildSlides(ratio, content){
+  // 스토리(9:16)도 캐러셀과 같은 문구(headline+lede)를 쓴다 — hook_reel은
+  // 릴스 영상 첫 프레임 전용 문구라 정보량이 부족해 정적 이미지엔 쓰지 않는다.
+  const coverBase = { headline: content.cover.headline, lede: content.cover.lede };
+
+  // 이미지가 있으면 field(코발트)를 사진 로드 실패 시 안전망으로 깔아둔다.
+  // 이미지가 없으면 다른 슬라이드와 같은 paper 톤을 써서 디자인을 통일한다.
+  const cover = { tone: content.cover.image ? "field" : "paper", image: content.cover.image, ...coverBase, isEdge: true };
+
+  // 캐러셀(4:5)과 스토리(9:16)는 비율만 다르고 슬라이드 구성(표지+본문3+CTA)은 동일하다.
+  return [
+    cover,
+    ...content.slides.map(s => ({ tone:"paper", ...s })),
+    { tone:"signal", ...content.cta, isEdge: true }
+  ];
+}
+
+function renderDefaultBody(slide){
+  const beats = slideBeats(slide);
+  const beatsHtml = beats.length
+    ? `<div class="beats">${beats.map(b => `<p class="beat">${b}</p>`).join("")}</div>` : "";
+  const pointsHtml = slide.points
+    ? `<div class="points">${
+        slide.points.map((p, pi) => `<div class="point"><span class="point-num">${pi + 1}</span><span class="point-text">${p}</span></div>`).join("")
+      }</div>` : "";
+  const evidenceHtml = slide.image
+    ? `<div class="evidence"><img src="${slide.image}"></div>${slide.image_caption ? `<p class="evidence-cap">${slide.image_caption}</p>` : ""}`
+    : "";
+  return beatsHtml + pointsHtml + evidenceHtml;
+}
+
+function renderListBody(slide){
+  const introHtml = slide.list_intro ? `<div class="beats"><p class="beat">${slide.list_intro}</p></div>` : "";
+  const items = slide.items || [];
+  const itemsHtml = `<div class="roadmap">${
+    items.map((it, i) => `<div class="roadmap-item"><span class="point-num">${i + 1}</span><div class="roadmap-body"><div class="roadmap-title">${it.title || ""}</div><div class="roadmap-desc">${it.desc || ""}</div></div></div>`).join("")
+  }</div>`;
+  return introHtml + itemsHtml;
+}
+
+function renderCompareBody(slide){
+  const c = slide.compare || {};
+  const box = (cls, data) => `
+    <div class="compare-box ${cls}">
+      <span class="compare-label"><span class="compare-icon">${cls === "before" ? "✗" : "✓"}</span>${data.label || ""}</span>
+      <span class="compare-text">${data.text || ""}</span>
+    </div>`;
+  const compareHtml = `<div class="compare">${box("before", c.before || {})}${box("after", c.after || {})}</div>`;
+  const deltaHtml = slide.delta ? `<div class="compare-delta">${slide.delta}</div>` : "";
+  return compareHtml + deltaHtml;
+}
+
+function renderSlide(slide, index, total, ratio, content, errs){
+  const S = SIZES[ratio];
+  const f = document.createElement("div");
+  f.className = "frame";
+  f.dataset.tone  = slide.tone;
+  f.dataset.ratio = ratio;
+  f.style.setProperty("--fw",  S.w + "px");
+  f.style.setProperty("--fh",  S.h + "px");
+  f.style.setProperty("--pad", S.pad + "px");
+  f.style.setProperty("--safe-bottom", S.safe + "px");
+
+  const hasPhoto = !!slide.image && !!slide.isEdge;   // 표지/CTA는 풀블리드 사진 레이어, 본문 slide.image는 evidence 박스로 별도 처리
+  if (hasPhoto) f.dataset.hasPhoto = "1";
+
+  const type = slide.type || "default";
+  f.dataset.type = type;
+  const beats = slideBeats(slide);
+  const long = stripTags(slide.headline || "").length > LIMITS.headline
+    || beats.length > 1
+    || type !== "default";
+  if (index === 0 && errs.length) f.dataset.overflow = "1";
+
+  const isCta = slide.tone === "signal";
+  const dots = Array.from({ length: total }, (_, di) =>
+    `<i data-active="${di === index ? "1" : "0"}"></i>`).join("");
+
+  const bodyHtml = type === "list" ? renderListBody(slide)
+    : type === "compare" ? renderCompareBody(slide)
+    : renderDefaultBody(slide);
+
+  f.innerHTML = `
+    ${hasPhoto ? `<div class="bg-photo" style="background-image:url('${slide.image}')"></div><div class="bg-scrim"></div>` : ""}
+    <div class="warn-badge">스키마 위반 ${errs.length}건 — 콘솔 확인</div>
+
+    <div class="top">
+      <span class="brand">${content.brand}</span>
+      <span>${String(index + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}</span>
+    </div>
+
+    <div class="bodyc">
+      ${slide.eyebrow ? `<div class="kicker"><div class="accent-bar"></div><div class="eyebrow">${slide.eyebrow}</div></div>` : ""}
+      ${slide.headline ? `<h1 class="headline ${long ? "sm" : ""}">${slide.headline.replace(/\n/g, "<br>")}</h1>` : ""}
+      ${slide.lede && !beats.length ? `<p class="lede">${slide.lede}</p>` : ""}
+      ${bodyHtml}
+      ${isCta ? `<span class="cta-btn">${slide.button_label || "팔로우 →"}</span>` : ""}
+    </div>
+
+    <div class="foot">
+      <span class="src">${slide.source ? `<span class="src-pill">↗ ${new URL(slide.source).hostname.replace(/^www\./, "")}</span>` : ""}</span>
+      <span>${content.handle}</span>
+    </div>
+    ${total > 1 ? `
+    <div class="pager">
+      <span class="navdot prev">‹</span>
+      <div class="dots">${dots}</div>
+      <span class="navdot next">›</span>
+    </div>` : ""}
+  `;
+  return f;
+}
+
+function main(){
+  const errs = validate(CONTENT);
+  window.__validationErrors = errs;
+  if (errs.length) console.error("[스키마 검증 실패]", errs);
+
+  const slides = buildSlides(RATIO, CONTENT);
+
+  if (MODE === "preview") {
+    document.body.style.display = "block";
+    const wrap = document.createElement("div");
+    wrap.className = "preview";
+
+    if (errs.length) {
+      const banner = document.createElement("div");
+      banner.style.cssText = "width:100%;padding:16px 20px;background:#E0293F;color:#fff;font:700 16px sans-serif;border-radius:8px;margin-bottom:8px;";
+      banner.textContent = `⚠ 스키마 위반 ${errs.length}건: ` + errs.join(" / ");
+      wrap.appendChild(banner);
+    }
+
+    ["45","916"].forEach(r => {
+      const list = buildSlides(r, CONTENT);
+      list.forEach((s, i) => {
+        const box = document.createElement("div");
+        const scale = r === "45" ? 0.24 : 0.17;
+        const cell = document.createElement("div");
+        cell.style.width  = (SIZES[r].w * scale) + "px";
+        cell.style.height = (SIZES[r].h * scale) + "px";
+        cell.style.overflow = "hidden";
+        const node = renderSlide(s, i, list.length, r, CONTENT, errs);
+        node.classList.add("thumb");
+        node.style.transform = `scale(${scale})`;
+        cell.appendChild(node);
+        box.innerHTML = `<div class="label">${r === "45" ? "캐러셀 4:5" : "스토리·릴스 9:16"} · ${i + 1}</div>`;
+        box.appendChild(cell);
+        wrap.appendChild(box);
+      });
+    });
+    document.body.appendChild(wrap);
+  } else {
+    const i = Math.min(parseInt(P.get("i") || "0", 10), slides.length - 1);
+    document.body.appendChild(renderSlide(slides[i], i, slides.length, RATIO, CONTENT, errs));
+  }
+
+  document.fonts.ready.then(() => { document.body.dataset.ready = "1"; });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", main);
+} else {
+  main();
+}
+</script>

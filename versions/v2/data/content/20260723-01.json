@@ -1,0 +1,77 @@
+{
+  "id": "20260723-01",
+  "brand": "칼퇴각",
+  "handle": "@kaltoegak",
+  "hook_reel": "AI가 일까지 맡습니다",
+  "cover": {
+    "headline": "이제 AI는\n일을 대신 굴립니다",
+    "lede": "정부가 23일 ‘에이전틱 AI 이니셔티브’를 발표했습니다",
+    "image_concept": "넓은 회의실, 여러 업무 카드가 스스로 이동하는 보드 앞에 직장인이 서 있는 뒷모습. 사람이 하나씩 지시하던 흐름에서 목표 중심으로 일이 굴러가는 변화가 보이는, 차분하지만 긴장감 있는 분위기",
+    "image": "file:///C:/Users/user1/Documents/kaltoegak/assets/cover-20260723-01.png"
+  },
+  "slides": [
+    {
+      "eyebrow": "무엇이 발표됐나",
+      "headline": "오늘 봐야 할 키워드는\n<span class='hl'>에이전틱 AI</span>입니다",
+      "lede": "과기정통부가 23일 장관회의에서 이니셔티브를 발표했습니다.",
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41110"
+    },
+    {
+      "eyebrow": "무엇이 달라지나",
+      "headline": "AI가 답만 하는 게 아니라\n계획하고 실행합니다",
+      "points": [
+        "목표에 따라 자율적으로 계획합니다",
+        "능동적으로 실행하는 AI로 설명됐습니다"
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41110"
+    },
+    {
+      "eyebrow": "왜 중요한가",
+      "headline": "방향은 세 가지입니다:\n안전, 개방, 도입",
+      "points": [
+        "안전·신뢰 선도 전략이 포함됐습니다",
+        "수요 중심 도입 촉진도 제시됐습니다"
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41110"
+    },
+    {
+      "eyebrow": "조심할 지점",
+      "headline": "AI에게 권한을 줄수록\n통제 기준이 필요합니다",
+      "points": [
+        "개인정보·민감데이터 보호를 반영합니다",
+        "AI 권한 관리, 목표 이탈 방지도 담깁니다"
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41110"
+    },
+    {
+      "eyebrow": "업무 환경 변화",
+      "headline": "믿을 만한 AI 에이전트를\n고르는 시장도 준비됩니다",
+      "points": [
+        "AI 에이전트 마켓플레이스를 지원합니다",
+        "AI OS 핵심 기술 개발도 밝혔습니다"
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41110"
+    },
+    {
+      "eyebrow": "오늘의 의미",
+      "headline": "직장인의 AI 활용도\n더 넓어질 수 있습니다",
+      "points": [
+        "‘모두의 AI 프로젝트’ 기반을 마련합니다",
+        "4월엔 에이전틱 AI 얼라이언스가 출범했습니다"
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41110"
+    }
+  ],
+  "cta": {
+    "headline": "AI 뉴스는 이제\n‘기능’보다 ‘권한’을 보세요",
+    "lede": "무엇을 대신 실행하게 할지부터 업무가 바뀝니다.",
+    "image": null
+  },
+  "caption": "AI가 답변 도구에서 업무 실행 도구로 넘어가고 있습니다.\n\n과기정통부가 발표한 에이전틱 AI 이니셔티브의 핵심은 단순합니다. AI가 목표를 이해하고, 계획을 세우고, 실행하는 방향으로 정책과 생태계를 만들겠다는 겁니다.\n\n직장인 AI 활용도 이제 “무엇을 물어볼까”에서 “어디까지 맡길 수 있을까”로 바뀔 가능성이 큽니다. 동시에 개인정보, 권한 관리, 목표 이탈 방지 같은 기준도 중요해집니다.\n\n나중에 다시 볼 수 있게 저장하고, AI 업무 자동화에 관심 있는 동료에게 공유해 주세요.",
+  "hashtags": [
+    "직장인AI",
+    "에이전틱AI",
+    "AI자동화",
+    "칼퇴각"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "id": "20260724-01",
+  "brand": "칼퇴각",
+  "handle": "@kaltoegak",
+  "hook_reel": "사칭 위협 90초 점검",
+  "cover": {
+    "headline": "우리 브랜드,\n사칭되고 있을까요?",
+    "lede": "주소 하나로 온라인 위협 노출을 90초 안에 확인하는 서비스가 나왔습니다",
+    "image_concept": "마케팅팀 회의실, 벽면에 펼쳐진 여러 온라인 접점 지도 앞에서 한 사람이 흩어진 경고 핀들을 바라보는 장면. 여러 경로에 퍼진 위협을 한눈에 모으는, 긴장감 있지만 차분한 분위기",
+    "image": "file:///C:/Users/user1/Documents/kaltoegak/assets/cover-20260724-01.png"
+  },
+  "slides": [
+    {
+      "eyebrow": "무엇이 나왔나",
+      "headline": "주소 하나로\n위협 지도를 봅니다",
+      "beats": [
+        "24일 정식 출시된 마크레이더는 브랜드 공식 웹사이트 주소만 넣는 자가진단 서비스입니다.",
+        "온라인 위협 노출 현황을 먼저 확인하는 데 초점을 둔 도구입니다."
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41135"
+    },
+    {
+      "eyebrow": "속도가 핵심",
+      "headline": "리포트가\n<span class='hl'>90초 이내</span> 나옵니다",
+      "beats": [
+        "웹사이트 주소를 입력하면 90초 이내 진단 리포트를 자동 생성합니다.",
+        "회의 전 빠르게 현재 노출 상태를 확인하는 용도로 볼 수 있습니다."
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41135"
+    },
+    {
+      "eyebrow": "어디를 보나",
+      "headline": "흩어진 접점\n<span class='hl'>5곳</span>을 같이 봅니다",
+      "beats": [
+        "분석 범위는 유사·사칭 도메인, 이커머스, SNS, 유료 검색 광고, 웹 콘텐츠 5가지입니다.",
+        "브랜드 접점이 흩어진 만큼 한곳이 아니라 여러 경로를 함께 봅니다."
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41135"
+    },
+    {
+      "eyebrow": "무엇을 알려주나",
+      "headline": "위험도만 아니라\n처리 난이도도 봅니다",
+      "beats": [
+        "리포트는 위험 점수, 심각도, 삭제·차단 난이도를 함께 제시합니다.",
+        "단순 발견 목록보다 어떤 건부터 봐야 할지 판단하는 재료가 생깁니다."
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41135"
+    },
+    {
+      "eyebrow": "무료로 어디까지",
+      "headline": "잠재 위협\n<span class='hl'>최대 20건</span>을 확인합니다",
+      "beats": [
+        "무료 라이트 리포트에서는 최대 20건의 잠재 위협을 즉시 확인할 수 있습니다.",
+        "정식 점검 전에 우리 브랜드의 잠재 위협 규모를 가늠할 수 있습니다."
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41135"
+    },
+    {
+      "eyebrow": "왜 지금인가",
+      "headline": "보호의 시작은\n제재보다 <span class='hl'>진단</span>입니다",
+      "beats": [
+        "최근 온라인 접점은 이커머스, SNS, 검색 광고, 공식 웹사이트로 다변화됐습니다.",
+        "마크레이더는 제재 수행보다 잠재 위협의 발견과 가시성 확보에 초점을 둡니다.",
+        "대표는 브랜드 보호가 객관적 진단에서 시작된다고 설명했습니다."
+      ],
+      "source": "https://www.aitimes.kr/news/articleView.html?idxno=41135"
+    }
+  ],
+  "cta": {
+    "headline": "우리 브랜드도\n먼저 확인해보세요",
+    "lede": "사칭·유사 도메인·광고 노출은 발견이 늦을수록 대응도 늦어집니다",
+    "button_label": "저장하고 점검하기 →",
+    "image": null
+  },
+  "caption": "브랜드 보호는 문제가 터진 뒤 잡는 일만이 아닙니다.\n\n마크비전이 출시한 마크레이더는 브랜드 웹사이트 주소를 바탕으로 온라인 위협 노출 현황을 빠르게 보여주는 자가진단 서비스입니다. 유사·사칭 도메인, 이커머스, SNS, 검색 광고, 웹 콘텐츠까지 보는 범위가 넓어진 만큼 마케팅·커머스 담당자라면 한 번 체크해볼 만한 뉴스입니다.\n\n나중에 브랜드 점검할 때 꺼내볼 수 있게 저장하고, 담당자에게 공유해두세요.",
+  "hashtags": [
+    "마크레이더",
+    "브랜드보호",
+    "AI뉴스",
+    "직장인AI"
+  ]
+}
