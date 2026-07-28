@@ -1,0 +1,146 @@
+{
+  "name": "기본",
+  "_last_health_check": null,
+  "feeds": [
+    {
+      "name": "OpenAI News",
+      "url": "https://openai.com/news/rss.xml",
+      "tier": 1,
+      "enabled": true,
+      "note": "공식. 검증됨(2026-05). 인용 가능 1층 소스.",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-20",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "Hugging Face Blog",
+      "url": "https://huggingface.co/blog/feed.xml",
+      "tier": 1,
+      "enabled": true,
+      "note": "공식. 검증됨(2026-05).",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-20",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "Google DeepMind / Research Blog",
+      "url": "https://research.google/blog/rss/",
+      "tier": 1,
+      "enabled": true,
+      "note": "구글 리서치 공식 블로그 RSS. 헬스체크로 최종 확인 필요.",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-15",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "Anthropic News (커뮤니티 미러)",
+      "url": "https://raw.githubusercontent.com/taobojlen/anthropic-rss-feed/main/anthropic_news_rss.xml",
+      "tier": 1,
+      "enabled": true,
+      "note": "Anthropic은 공식 RSS 없음. 커뮤니티가 GitHub에 생성/유지하는 미러. 남의 저장소 의존이므로 헬스체크 필수 대상.",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-02",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "MarkTechPost",
+      "url": "https://www.marktechpost.com/feed/",
+      "tier": 1,
+      "enabled": true,
+      "note": "매체지만 랩 발표를 빠르게 받아씀. 검증됨(2026-05).",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-20",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "TLDR AI",
+      "url": "https://tldr.tech/api/rss/ai",
+      "tier": "newsletter",
+      "enabled": true,
+      "note": "데일리 뉴스레터. 헬스체크로 URL 최종 확인 필요.",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-20",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "The Batch (DeepLearning.AI, 커뮤니티 미러)",
+      "url": "https://raw.githubusercontent.com/cnzhujie/ai-rss-feed/main/rss/deeplearning_the_batch_rss.xml",
+      "tier": "newsletter",
+      "enabled": false,
+      "note": "주간. 속도보다 깊이/각도 참고용. 기본 off — 필요 시 켜기.",
+      "verified": {
+        "status": "SKIPPED",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "AI타임스",
+      "url": "https://www.aitimes.com/rss/allArticle.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "국내 로컬 맥락 전용(국내 출시·가격·규제·네이버/카카오/LG). URL 패턴 추정 — 헬스체크로 반드시 확인.",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-21",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "인공지능신문",
+      "url": "http://www.aitimes.kr/rss/allArticle.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "AI타임스와 다른 매체(주의). /rss/ 지원 확인됨, 정확한 xml 경로는 헬스체크로 확인.",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-21",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "Wes Roth (YouTube)",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCqABiVL_r_pT-a4LU-2rp5g",
+      "tier": "yt",
+      "enabled": false,
+      "note": "속보 반응형. 제목만 탐지용. channel_id 헬스체크로 확인 필요. 기본 off.",
+      "verified": {
+        "status": "SKIPPED",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "Matthew Berman (YouTube)",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCawZsQWqfGSbCI5yjkdVkTA",
+      "tier": "yt",
+      "enabled": false,
+      "note": "툴/실사용. channel_id 헬스체크로 확인 필요. 기본 off.",
+      "verified": {
+        "status": "SKIPPED",
+        "checked": "2026-07-21"
+      }
+    },
+    {
+      "name": "AI Explained (YouTube)",
+      "url": "https://www.youtube.com/feeds/videos.xml?channel_id=UCNJ1Ymd5yFuUPtn21xtRbbw",
+      "tier": "yt",
+      "enabled": false,
+      "note": "깊이/검증 필터. 이 사람이 다뤘다는 것 자체가 '검증된 큰 건' 신호. channel_id 확인 필요. 기본 off.",
+      "verified": {
+        "status": "SKIPPED",
+        "checked": "2026-07-21"
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "candidate": {
+    "id": "20260724-01",
+    "title": "파워포인트 이미지 AI, MS 자체 모델로 바뀐다",
+    "one_line": "마이크로소프트가 이미지 생성 모델 ‘MAI-Image-2.5-Pro’와 음성 생성 모델을 공개 프리뷰로 내놓고 Bing, PowerPoint, OneDrive 등에 적용하기 시작했다.",
+    "why_now": "23일 현지시간 공개 프리뷰 출시가 발표됐고, 직장인이 자주 쓰는 MS 오피스 도구에 바로 영향을 주는 변화다.",
+    "angle": "PPT·제안서 만드는 직장인이 달라질 점 3가지",
+    "source": "https://www.aitimes.com/news/articleView.html?idxno=213132",
+    "visual": "MS 서비스별 적용 위치를 비교표로 보여주면 5장 구성 쉬움"
+  },
+  "research_pairs": null,
+  "research_note_path": null,
+  "content_path": null,
+  "cover_image_path": null,
+  "render_out_dir": null,
+  "reel_path": null,
+  "updated_at": "2026-07-28T06:00:01.575189+00:00"
+}
