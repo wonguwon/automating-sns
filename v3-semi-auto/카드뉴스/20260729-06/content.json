@@ -1,0 +1,87 @@
+{
+  "id": "20260729-06",
+  "brand": "생활안전노트",
+  "handle": "@safety_note",
+  "hook_reel": "싼 필터, 먼저 확인",
+  "cover": {
+    "headline": "공기청정기\n호환필터,\n가격만 보지 마세요",
+    "lede": "정품의 30~56% 가격, 하지만 성능·안전 차이가 확인됐습니다",
+    "image_concept": "거실 한쪽, 공기청정기 앞에 열린 필터함과 교체용 필터가 놓여 있는 장면. 한쪽은 맑은 공기 흐름, 다른 쪽은 흐릿한 입자가 남는 대비로 성능 차이를 보여주는 차분하고 경계감 있는 분위기",
+    "image": "file:///C:/Users/user1/Documents/ai-sns/v3-semi-auto/assets/cover-20260729-06.png"
+  },
+  "slides": [
+    {
+      "eyebrow": "싸게 사기 전",
+      "headline": "싼 이유만으로는\n선택 근거가 부족합니다",
+      "beats": [
+        "호환필터는 정품필터와 모양·기능이 비슷하지만 가격은 30~56% 수준입니다.",
+        "한국소비자원은 28일 시중 20개 제품 시험 결과를 공개했습니다.",
+        "LG·삼성·위닉스·샤오미 최신제품에 장착해 비교했습니다."
+      ],
+      "source": "https://www.khan.co.kr/article/202607281520001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    },
+    {
+      "eyebrow": "가스 제거",
+      "headline": "냄새·가스 기준은\n<span class='hl'>4개</span>만 넘었습니다",
+      "beats": [
+        "20개 중 유해가스 제거 기준을 충족한 제품은 4개뿐이었습니다.",
+        "기준은 5개 가스 각각 40% 이상, 평균 70% 이상 제거입니다.",
+        "16개 평균 제거율은 20~63%, 정품필터는 81~100%였습니다."
+      ],
+      "source": "https://www.khan.co.kr/article/202607281520001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    },
+    {
+      "eyebrow": "먼지 제거",
+      "headline": "미세먼지도\n표시만큼 못 잡은 제품이 많았습니다",
+      "beats": [
+        "20개 중 8개만 표시 성능의 90% 이상을 기록했습니다.",
+        "나머지 12개는 표시 값의 68~89% 수준에 머물렀습니다.",
+        "필터 겉모양보다 실제 제거 성능 확인이 필요합니다."
+      ],
+      "source": "https://www.khan.co.kr/article/202607281520001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    },
+    {
+      "eyebrow": "안전성 경고",
+      "headline": "샤오미용 2개에서는\n<span class='hl'>MIT</span>가 검출됐습니다",
+      "beats": [
+        "아이텍 ‘TSI 그레이 프리미엄’, 세진아쿠아 ‘세진 그레이필터’에서 나왔습니다.",
+        "두 제품은 모두 중국 제조품이고 판매량은 각각 433개, 192개였습니다.",
+        "MIT는 탈취필터에 함유가 금지된 물질입니다."
+      ],
+      "source": "https://www.khan.co.kr/article/202607281520001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    },
+    {
+      "eyebrow": "후속 조치",
+      "headline": "문제 제품은\n회수·환불 권고를 받았습니다",
+      "beats": [
+        "소비자원은 판매 중단, 회수, 무상 교환 또는 환불을 권고했습니다.",
+        "MIT가 검출된 두 업체는 권고를 수용했습니다.",
+        "성능 미흡 16개 업체 중 13개는 재질·공정 개선 계획을 밝혔습니다."
+      ],
+      "source": "https://www.khan.co.kr/article/202607281520001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    },
+    {
+      "eyebrow": "구매 전 확인",
+      "headline": "가격표보다\n이 3가지를 먼저 보세요",
+      "points": [
+        "호환 여부와 교체주기 함께 보기",
+        "유해가스·미세먼지 성능 확인",
+        "MIT 검출 제품 회수 여부 확인"
+      ],
+      "source": "https://www.khan.co.kr/article/202607281520001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    }
+  ],
+  "cta": {
+    "headline": "필터 살 때는\n성능표까지 보세요",
+    "lede": "구매 전 성능과 회수 대상 여부를 함께 확인하세요.",
+    "button_label": "필터 체크 저장 →",
+    "image": null
+  },
+  "caption": "공기청정기 필터, 가격표만 보면 놓치는 게 있습니다.\n\n한국소비자원이 시중 공기청정기 호환필터 20개를 시험한 결과, 유해가스 제거 기준을 충족한 제품은 4개뿐이었습니다. 미세먼지 제거 성능도 12개 제품은 표시 값의 68~89% 수준에 그쳤습니다.\n\n특히 샤오미 공기청정기용 호환필터 2개 제품에서는 탈취필터에 금지된 MIT가 검출돼 판매 중단·회수·무상 교환 또는 환불 권고가 나왔습니다.\n\n필터를 고를 때는 가격뿐 아니라 유해가스·미세먼지 제거 성능, 교체주기, 회수 대상 여부까지 함께 확인하세요. 가족에게도 공유하고, 다음 구매 전 보려고 저장해두세요.",
+  "hashtags": [
+    "공기청정기",
+    "호환필터",
+    "생활안전",
+    "소비자원"
+  ]
+}
