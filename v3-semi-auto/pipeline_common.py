@@ -40,6 +40,9 @@ MUSIC_DIR = HERE / "music"
 MUSIC_EXTS = ("*.mp3", "*.m4a", "*.wav", "*.aac")
 OUT_ROOT = HERE / "카드뉴스"
 SOURCES_DIR = HERE / "sources"
+TEMPLATES_DIR = HERE / "templates"
+TEMPLATE_EXAMPLE_DIRNAME = "예시"
+TEMPLATE_EXAMPLE_EXTS = (".png", ".jpg", ".jpeg", ".webp")
 
 for d in (DATA, CAND_DIR, RESEARCH_DIR, CONTENT_DIR, PIPELINE_DIR, RSS_COLLECT_DIR, ASSETS_DIR, SOURCES_DIR):
     d.mkdir(parents=True, exist_ok=True)
@@ -55,9 +58,134 @@ def list_research_notes() -> list[Path]:
         return []
     return sorted(RESEARCH_DIR.glob("*.md"), reverse=True)
 
+def list_templates() -> list[Path]:
+    """
+    카드뉴스 템플릿 목록. templates/<템플릿명>/ 폴더 중 template.html과 prompt.md가
+    둘 다 있는 것만 템플릿으로 인정한다 — 이 둘은 같은 스키마의 양면(렌더 검증 ↔ 생성 규칙)이라
+    한쪽만 있으면 세트가 아니다. 예시 이미지(예시/)는 없어도 된다.
+    """
+    if not TEMPLATES_DIR.exists():
+        return []
+    return sorted(
+        d for d in TEMPLATES_DIR.iterdir()
+        if d.is_dir() and (d / "template.html").exists() and (d / "prompt.md").exists()
+    )
+
+
+def list_template_examples(template_dir: Path) -> list[Path]:
+    """템플릿 폴더의 예시/ 안에 있는 이미지 파일 목록 (없으면 빈 리스트)."""
+    example_dir = template_dir / TEMPLATE_EXAMPLE_DIRNAME
+    if not example_dir.exists():
+        return []
+    return sorted(
+        p for p in example_dir.iterdir()
+        if p.is_file() and p.suffix.lower() in TEMPLATE_EXAMPLE_EXTS
+    )
+
+
+CONTENT_JSON_USER_PROMPT = """오늘 채택된 소재 ID: {content_id}
+
+계정 정보 (빈 항목은 스키마 규칙대로 처리한다 — brand/handle이 비어 있으면 빈 문자열로 둔다):
+- 계정 이름(brand): {brand}
+- 핸들(handle): {handle}
+- 독자층: {audience}
+
+콘텐츠 방향 ("(없음)"이면 스토리라인·톤은 소재에 맞게 네가 자유롭게 설계한다):
+{direction}
+
+출처 URL 목록 (각 슬라이드의 source는 반드시 이 목록의 URL 중에서 고른다 — 목록에 없는 URL을
+만들어내지 않는다):
+{sources}
+
+아래는 딥리서치 조사 노트다. 이 노트에 명시된 사실만 사용해서 스키마에 맞는 JSON을 만들어라.
+
+{research_note}
+"""
+
+
+def build_content_json_prompt(
+    template_dir: Path, content_id: str, research_note: str, source_urls: list[str],
+    brand: str = "", handle: str = "", audience: str = "", direction: str = "",
+) -> tuple[str, str]:
+    """
+    (시스템 프롬프트, 사용자 프롬프트)를 조립한다.
+    시스템 프롬프트는 선택된 템플릿의 prompt.md 그대로(수정은 템플릿 관리에서),
+    사용자 프롬프트는 계정 정보(생성 시 입력, 저장 안 함) + 출처 URL 목록 + 조사 노트 전문으로
+    만들어 화면에서 보여주고 실행 전 수정할 수 있게 한다. pairs 중간 산출물은 쓰지 않는다 —
+    노트가 곧 참고자료다(2026-07-29 결정).
+    """
+    system_prompt = (template_dir / "prompt.md").read_text(encoding="utf-8")
+    urls = [u for u in dict.fromkeys(source_urls) if u]
+    user_prompt = CONTENT_JSON_USER_PROMPT.format(
+        content_id=content_id,
+        brand=brand.strip() or "(없음)",
+        handle=handle.strip() or "(없음)",
+        audience=audience.strip() or "(없음)",
+        direction=direction.strip() or "(없음)",
+        sources="\n".join(f"- {u}" for u in urls) if urls else "(목록 없음 — 노트의 「출처」 섹션에 있는 URL을 사용)",
+        research_note=research_note,
+    )
+    return system_prompt, user_prompt
+
+
+INSTA_CAPTION_PROMPT = """아래 딥리서치 조사 노트를 근거로, 인스타그램 업로드용 설명문구(캡션)를 작성하라.
+
+규칙:
+- 노트에 명시된 사실만 쓴다 — 숫자·날짜·기관명은 정확히 유지하고, 새 사실을 지어내지 않는다.
+- 저작권: 원문·노트의 문장을 그대로(또는 어순만 바꿔) 옮기지 말고 전부 새 문장으로 쓴다.
+  직접 인용이 꼭 필요하면 따옴표로 표시하고 누구의 말인지 밝힌다.
+- 구성: 첫 줄은 스크롤을 멈추게 하는 훅 문장 → 핵심 내용을 구체적 수치·사실을 살려 상세하게
+  (문단을 나눠 읽기 쉽게) → 독자가 바로 활용할 행동 포인트 → 저장·공유를 유도하는 마무리 문장.
+- 마지막 줄에 해시태그를 붙인다 (#태그 형식 한 줄, 5~10개, 소재와 직접 관련된 것만).
+- 출력은 설명문구 본문과 해시태그만 — 제목, 부가 설명, 코드펜스 없이 그대로 복사해 붙여넣을 수
+  있는 텍스트로만 출력한다.
+
+조사 노트:
+{research_note}
+"""
+
+
+def run_insta_caption(client: OpenAI, research_note: str) -> str:
+    """조사 노트로 인스타 업로드용 설명문구(+해시태그)를 생성해 복붙 가능한 텍스트로 돌려준다."""
+    resp = client.chat.completions.create(
+        model="gpt-5.5",
+        messages=[{"role": "user", "content": INSTA_CAPTION_PROMPT.format(research_note=research_note)}],
+    )
+    return resp.choices[0].message.content.strip()
+
+
+def run_content_json_prompt(
+    client: OpenAI, system_prompt: str, user_prompt: str, content_id: str
+) -> tuple[dict | None, str]:
+    """
+    카드뉴스 JSON 생성 프롬프트를 실행한다. (파싱된 dict 또는 None, 모델 원본 출력)을 반환한다 —
+    파싱 실패 시 호출부가 원본을 화면에 보여줄 수 있게 예외 대신 None을 준다.
+    """
+    import re
+
+    resp = client.chat.completions.create(
+        model="gpt-5.5",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+    )
+    raw = resp.choices[0].message.content.strip()
+    cleaned = re.sub(r"^```(json)?|```$", "", raw, flags=re.MULTILINE).strip()
+
+    try:
+        content = json.loads(cleaned)
+    except json.JSONDecodeError:
+        return None, raw
+
+    content["id"] = content_id
+    return content, raw
+
+
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ARK_API_KEY = os.environ.get("ARK_API_KEY")
-IMAGE_PROVIDERS = {"GPT Image 2 (OpenAI)": "openai", "Doubao-Seedream (Volcengine Ark)": "seedream"}
+# 첫 항목이 셀렉트박스 기본값이 된다 — 기본 모델은 Seedream(2026-07-29 사용자 결정, ARK_API_KEY 필요).
+IMAGE_PROVIDERS = {"Doubao-Seedream (Volcengine Ark)": "seedream", "GPT Image 2 (OpenAI)": "openai"}
 
 
 # ============================================================
@@ -196,18 +324,14 @@ RESEARCH_NOTE_PROMPT = """아래 후보에 대해, 소스를 최대한 상세하
 밝힌다.
 
 출력 형식:
-1. 마크다운으로 조사 노트를 작성한다 (배경, 핵심 사실, 왜 지금 다룰 가치가 있는지, 관련 맥락과 함의,
-   특이사항·주의할 점 등). 원문에 있는 구체적인 숫자·날짜·기관명·발언 내용을 최대한 살려서 쓰되,
-   문장 자체는 원문을 베끼지 않고 새로 쓴다 — 뭉뚱그리지도, 그대로 옮기지도 않는다. 원문이 여러 건이면
-   겹치는 사실은 교차 확인된 것으로, 서로 다른 사실은 모두 반영해서 쓴다. 목표는 원문 문장의 요약이나
-   복사가 아니라, 원문에 있는 사실을 빠짐없이·정확하게·새 문장으로 옮겨 담는 것이다.
-2. 문서 맨 끝에 `---PAIRS---` 구분선을 넣고, 그 뒤에 (내용, 출처) 쌍의 JSON 배열을 붙인다:
-   [{{"content": "...", "source": "..."}}, ...]
-   각 content는 노트에서 실제로 쓴 구체적인 사실 하나다 — 이것도 원문 문장을 그대로 복사한 것이 아니라
-   사실을 새 문장으로 쓴 것이어야 한다. 원문에 있는 서로 다른 구체적 사실(숫자·날짜·기관명·발언 요지
-   등)은 개수 제한 없이 빠짐없이 다 뽑는다 — 개수를 맞추려고 적게 뽑거나 억지로 채우지 않는다. 같은
-   사실을 표현만 바꿔 중복으로 넣지 않는다. source는 그 사실이 실제로 나온 원문의 URL이다. 아래
-   "출처 목록"에 있는 URL만 쓸 수 있다 (없는 링크를 만들어내지 않는다).
+마크다운으로 조사 노트 하나만 작성한다 (배경, 핵심 사실, 왜 지금 다룰 가치가 있는지, 관련 맥락과 함의,
+특이사항·주의할 점 등). 원문에 있는 구체적인 숫자·날짜·기관명·발언 내용을 최대한 살려서 쓰되,
+문장 자체는 원문을 베끼지 않고 새로 쓴다 — 뭉뚱그리지도, 그대로 옮기지도 않는다. 원문이 여러 건이면
+겹치는 사실은 교차 확인된 것으로, 서로 다른 사실은 모두 반영해서 쓴다. 목표는 원문 문장의 요약이나
+복사가 아니라, 원문에 있는 사실을 빠짐없이·정확하게·새 문장으로 옮겨 담는 것이다.
+이 노트는 다음 단계(카드뉴스 생성)가 참고자료로 그대로 읽는다 — 노트에 없는 사실은 콘텐츠에 쓸 수
+없으므로, 확인된 사실은 빠짐없이 담는다. 문서 맨 끝에는 `## 출처` 섹션을 두고 실제로 참고한 원문
+URL을 목록으로 적는다 (아래 "출처 목록"에 있는 URL만 쓸 수 있다 — 없는 링크를 만들어내지 않는다).
 
 후보:
 - 제목: {title}
@@ -251,28 +375,14 @@ def build_research_prompt(candidate: dict) -> tuple[str, bool]:
     return prompt, bool(fetched)
 
 
-def run_research_prompt(client: OpenAI, prompt: str) -> tuple[str, list[dict] | None]:
+def run_research_prompt(client: OpenAI, prompt: str) -> str:
+    """딥리서치 프롬프트를 실행해 마크다운 조사 노트를 돌려준다. 노트가 유일한 산출물이다(2026-07-29,
+    pairs 중간 산출물 제거 — 카드뉴스 생성이 노트 전문을 직접 읽는다)."""
     resp = client.chat.completions.create(
         model="gpt-5.5",
         messages=[{"role": "user", "content": prompt}],
     )
-    raw = resp.choices[0].message.content.strip()
-
-    if "---PAIRS---" in raw:
-        md_part, pairs_part = raw.split("---PAIRS---", 1)
-    else:
-        md_part, pairs_part = raw, "[]"
-
-    md_part = md_part.strip()
-    pairs_part = pairs_part.strip()
-    pairs_part = pairs_part.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-
-    try:
-        pairs = json.loads(pairs_part)
-    except json.JSONDecodeError:
-        pairs = None
-
-    return md_part, pairs
+    return resp.choices[0].message.content.strip()
 
 
 @st.dialog("딥리서치 결과", width="large")

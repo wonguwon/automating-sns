@@ -250,31 +250,19 @@ else:
         try:
             client = get_client()
             with st.spinner("딥리서치 중..."):
-                md_part, pairs = run_research_prompt(client, edited_prompt)
+                note_md = run_research_prompt(client, edited_prompt)
 
             RESEARCH_DIR.mkdir(parents=True, exist_ok=True)
-            note_path.write_text(md_part, encoding="utf-8")
+            note_path.write_text(note_md, encoding="utf-8")
 
-            pairs_path = RESEARCH_DIR / f"{active_id}.pairs.json"
-            if pairs is not None:
-                pairs_path.write_text(json.dumps(pairs, ensure_ascii=False, indent=2), encoding="utf-8")
+            # 조사 노트가 유일한 산출물이다 — pairs 중간 산출물은 만들지 않는다(2026-07-29 결정,
+            # 카드뉴스 생성 단계가 노트 전문 + 후보의 출처 URL 목록을 직접 읽는다).
+            save_state(active_id, research_note_path=str(note_path))
 
-            save_state(
-                active_id,
-                research_pairs=pairs,
-                research_note_path=str(note_path),
+            st.session_state["research_result_msg"] = (
+                "success",
+                f"딥리서치 완료 — {note_path.name} 저장됨. 카드뉴스 제작 페이지에서 이 노트를 선택해 진행하세요.",
             )
-
-            if pairs is None:
-                st.session_state["research_result_msg"] = (
-                    "error",
-                    "PAIRS JSON 파싱 실패 — 아래 「저장된 딥리서치 결과」에서 이 파일을 열어 원문을 확인하세요. (pairs 파일은 저장되지 않았습니다)",
-                )
-            else:
-                st.session_state["research_result_msg"] = (
-                    "success",
-                    f"딥리서치 완료 — 근거 {len(pairs)}개 확보. 다음 단계로 이동하세요.",
-                )
             st.rerun()
         except Exception as e:
             st.error(f"딥리서치 실패: {e}")

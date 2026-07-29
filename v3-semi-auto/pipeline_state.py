@@ -4,7 +4,7 @@
 ------------------------------------------------
 각 단계 페이지는 서로 다른 스크립트 실행이라 st.session_state만으로는 이어지지 않는다.
 content_id 하나당 data/pipeline/<content_id>.json 파일 하나에 "지금까지 저장할 곳이
-없던 것"(선택된 후보, 딥리서치 pairs)과 각 단계 산출물의 경로만 얇게 기록해 다음 단계가
+없던 것"(선택된 후보)과 각 단계 산출물의 경로만 얇게 기록해 다음 단계가
 디스크에서 그대로 이어받을 수 있게 한다.
 
 content(=카드뉴스 JSON) 본문 자체는 이 매니페스트에 복사하지 않는다 — data/content/<id>.json이
@@ -19,6 +19,8 @@ from pipeline_common import PIPELINE_DIR
 
 FIELDS = (
     "candidate",
+    # research_pairs는 더 이상 쓰지 않는다(2026-07-29, 노트 단일 산출물로 전환) —
+    # 과거 매니페스트와의 호환을 위해 필드 이름만 유지한다.
     "research_pairs",
     "research_note_path",
     "content_path",
