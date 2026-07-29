@@ -3,7 +3,7 @@
 칼퇴각 콘텐츠 생성기 — Flow 2 본체
 ------------------------------------------------
 조사 자료(텍스트)를 넣으면:
-  1) GPT-5.5로 content.json 생성 (prompt-content-json.md 규칙 적용)
+  1) GPT-5.5로 content.json 생성 (templates/기본/prompt.md 규칙 적용)
   2) 표지 이미지 생성 — GPT Image 2(기본) 또는 Volcengine Ark Doubao-Seedream 중 선택 (실패 시 null 폴백)
   3) Render.py 실행 → PNG 10장
 
@@ -52,7 +52,8 @@ SEEDREAM_MODEL = "seedream-5-0-260128"
 sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
 
-PROMPT_PATH = HERE / "prompt-content-json.md"
+# 콘텐츠 JSON 생성 프롬프트는 이제 템플릿 세트(templates/<템플릿명>/prompt.md)의 일부다(2026-07-29).
+PROMPT_PATH = HERE / "templates" / "기본" / "prompt.md"
 ASSETS_DIR = HERE / "assets"
 
 IMAGE_PROMPT_TEMPLATE = """한국 디지털 뉴스 매체의 세로형 썸네일에 사용할 사실적인 보도사진을 만들어주세요.
@@ -119,7 +120,7 @@ def generate_cover_image(
     """
     concept: content.json의 cover.image_concept (없으면 headline 폴백).
     헤드라인 문구가 아니라 "장소+인물/사물+비교+변화+분위기" 공식으로 쓴 장면 묘사여야 한다
-    (prompt-content-json.md의 '표지 이미지 컨셉' 절 참고).
+    (templates/기본/prompt.md의 '표지 이미지 컨셉' 절 참고).
     IMAGE_PROMPT_TEMPLATE는 플레이그라운드에서 검증 후 고정한 값이므로 이 함수 밖에서 바꾸지 않는다.
     재생성할 때는 concept는 그대로 두고 extra_direction만 바꿔서 다시 호출하면 된다.
 

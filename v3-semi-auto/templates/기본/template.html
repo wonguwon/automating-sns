@@ -1,13 +1,14 @@
 <meta charset="utf-8">
-<title>칼퇴각 · 카드 템플릿 v2</title>
+<title>기본 카드 템플릿</title>
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 
 <style>
 /* ============================================================
-   칼퇴각 — 카드 템플릿 v2
+   기본 카드 템플릿
    한 파일에서 4:5(캐러셀)와 9:16(스토리/릴스 소재)을 모두 렌더한다.
+   브랜드/핸들 문구는 content.json의 brand/handle 값을 그대로 그린다 — 특정 채널에 고정하지 않는다.
 
    v1 대비 변경점
      - 표지에 이미지 배경 + 그라디언트 스크림 레이어 (이미지 없으면 코발트 폴백)
@@ -361,8 +362,8 @@ const LIMITS = {
 
 const CONTENT = window.__EXTERNAL_CONTENT__ || {
 "id": "20260720-01",
-"brand": "칼퇴각",
-"handle": "@kaltoegak",
+"brand": "",
+"handle": "",
 "hook_reel": "당신의 긴 문서 업무가 달라집니다",
 "cover": {
 "headline": "당신이 AI에 맡길\n업무 범위가 넓어질 수 있습니다",
@@ -405,8 +406,7 @@ const CONTENT = window.__EXTERNAL_CONTENT__ || {
 "직장인AI",
 "제미나이",
 "업무효율",
-"AI트렌드",
-"칼퇴각"
+"AI트렌드"
 ]
 };
 
@@ -595,7 +595,7 @@ function renderSlide(slide, index, total, ratio, content, errs){
     <div class="warn-badge">스키마 위반 ${errs.length}건 — 콘솔 확인</div>
 
     <div class="top">
-      <span class="brand">${content.brand}</span>
+      <span class="brand">${content.brand || ""}</span>
       <span>${String(index + 1).padStart(2, "0")} / ${String(total).padStart(2, "0")}</span>
     </div>
 
@@ -609,7 +609,7 @@ function renderSlide(slide, index, total, ratio, content, errs){
 
     <div class="foot">
       <span class="src">${slide.source ? `<span class="src-pill">↗ ${new URL(slide.source).hostname.replace(/^www\./, "")}</span>` : ""}</span>
-      <span>${content.handle}</span>
+      <span>${content.handle || ""}</span>
     </div>
     ${total > 1 ? `
     <div class="pager">

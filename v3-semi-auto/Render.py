@@ -15,7 +15,7 @@ content.json 하나를 받아서
     python3 Render.py content.json
     python3 Render.py content.json ./내출력폴더
 
-card-template.html은 이 스크립트와 같은 폴더에 있어야 한다.
+템플릿 HTML은 templates/기본/template.html을 사용한다.
 ------------------------------------------------
 """
 import json
@@ -30,7 +30,9 @@ from playwright.sync_api import sync_playwright
 sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
 
-TEMPLATE = Path(__file__).parent / "card-template.html"
+# 템플릿은 templates/<템플릿명>/ 폴더에 html+프롬프트 세트로 관리한다(2026-07-29).
+# 아직은 "기본" 고정 — 템플릿 선택 인자화는 카드뉴스 제작 페이지의 렌더 단계에서 붙인다.
+TEMPLATE = Path(__file__).parent / "templates" / "기본" / "template.html"
 
 
 def load_content(path: str) -> dict:
@@ -54,7 +56,7 @@ def write_side_files(content: dict, out_dir: Path):
     )
 
 
-def render(content_path: str, out_dir: Path):
+def render(content_path: str, out_dir: Path, template_path: Path = TEMPLATE):
     content = load_content(content_path)
     out_dir.mkdir(parents=True, exist_ok=True)
     (out_dir / "carousel").mkdir(exist_ok=True)
@@ -63,7 +65,7 @@ def render(content_path: str, out_dir: Path):
 
     slide_count = len(content.get("slides", [])) + 2  # 표지 1 + 본문 N + CTA 1
     content_json = json.dumps(content, ensure_ascii=False)
-    template_url = f"file://{TEMPLATE.resolve()}"
+    template_url = f"file://{template_path.resolve()}"
 
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -105,7 +107,7 @@ def render(content_path: str, out_dir: Path):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("사용법: python3 render.py content.json [출력폴더]")
+        print("사용법: python3 Render.py content.json [출력폴더] [템플릿 html 경로]")
         sys.exit(1)
 
     content_path = sys.argv[1]
@@ -114,9 +116,10 @@ if __name__ == "__main__":
     else:
         # 기본 출력 경로: ./카드뉴스/오늘날짜
         out_dir = Path("카드뉴스") / date.today().isoformat()
+    template_path = Path(sys.argv[3]) if len(sys.argv) > 3 else TEMPLATE
 
     try:
-        render(content_path, out_dir)
+        render(content_path, out_dir, template_path)
     except RuntimeError as e:
         print(f"\n✗ 렌더 실패\n{e}")
         sys.exit(1)
