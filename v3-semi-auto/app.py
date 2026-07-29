@@ -21,11 +21,11 @@
 """
 import streamlit as st
 
-st.set_page_config(page_title="칼퇴각 파이프라인", layout="centered")
+st.set_page_config(page_title="인스타 자동화 파이프라인", layout="centered")
 
 pages = [
     st.Page("pages/1_컨텐츠_수집.py", title="컨텐츠 수집", default=True),
-    st.Page("pages/2_딥리서치.py", title="2. 딥리서치"),
+    st.Page("pages/2_딥리서치.py", title="딥리서치"),
     st.Page("pages/3_콘텐츠_JSON.py", title="3. 콘텐츠화"),
     st.Page("pages/4_표지_이미지.py", title="4. 표지 이미지"),
     st.Page("pages/5_콘텐츠_렌더.py", title="5. 콘텐츠 렌더"),
