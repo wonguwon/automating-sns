@@ -533,7 +533,9 @@ function renderDefaultBody(slide){
     ? `<div class="points">${
         slide.points.map((p, pi) => `<div class="point"><span class="point-num">${pi + 1}</span><span class="point-text">${p}</span></div>`).join("")
       }</div>` : "";
-  const evidenceHtml = slide.image
+  // 표지/CTA(isEdge)는 같은 이미지를 이미 전체화면 배경(.bg-photo)으로 쓰고 있어 evidence 박스를
+  // 또 그리면 이미지가 2장처럼 보이고, 박스 높이만큼 본문이 부풀어 하단 스크림 밖으로 밀려난다.
+  const evidenceHtml = (!slide.isEdge && slide.image)
     ? `<div class="evidence"><img src="${slide.image}"></div>${slide.image_caption ? `<p class="evidence-cap">${slide.image_caption}</p>` : ""}`
     : "";
   return beatsHtml + pointsHtml + evidenceHtml;
