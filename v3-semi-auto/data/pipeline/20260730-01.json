@@ -1,0 +1,36 @@
+{
+  "candidate": {
+    "id": "20260730-01",
+    "title": "다음 주까지 ‘이중 고기압’ 폭염…체감 38도 이상 경고",
+    "one_line": "전국적인 폭염과 열대야가 이어지는 가운데 경남권 등 일부 지역은 생명을 위협하는 수준의 더위와 온열질환 사례가 잇따르고 있습니다.",
+    "why_now": "오늘 폭염 관련 예보와 온열질환·사망 사례가 동시에 쏟아졌고, 최소 다음 주까지 더위가 이어질 전망이라 당장 행동수칙이 필요한 시점입니다.",
+    "angle": "‘오늘 밖에 나가도 될까?’를 기준으로 폭염 위험지역, 온열질환 신호, 가족·어르신 체크리스트를 한 번에 정리",
+    "source": "https://www.yna.co.kr/view/AKR20260730101300530",
+    "sources": [
+      "https://www.yna.co.kr/view/AKR20260730101300530",
+      "https://www.yna.co.kr/view/AKR20260730093300052",
+      "https://www.yna.co.kr/view/AKR20260730070351056",
+      "https://www.yna.co.kr/view/AKR20260730092100051",
+      "https://www.yna.co.kr/view/AKR20260730088100051",
+      "https://www.khan.co.kr/article/202607301131001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news",
+      "https://www.khan.co.kr/article/202607301043001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news",
+      "https://www.khan.co.kr/article/202607301008001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news",
+      "https://www.khan.co.kr/article/202607300745001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news",
+      "https://www.donga.com/news/Society/article/all/20260730/134393521/1",
+      "https://www.donga.com/news/Politics/article/all/20260730/134393301/1",
+      "https://www.donga.com/news/Society/article/all/20260730/134393224/1",
+      "https://www.chosun.com/national/regional/2026/07/30/CBPBDXPULVE4RKAXG744WKKK6U/"
+    ],
+    "visual": "폭염 지도+온열질환 체크리스트+시간대별 행동수칙으로 6장 구성 적합"
+  },
+  "research_pairs": null,
+  "research_note_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\data\\research\\20260730-01.md",
+  "content_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\data\\content\\20260730-01.json",
+  "cover_image_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\assets\\cover-20260730-01.png",
+  "render_out_dir": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\카드뉴스\\20260730-01",
+  "reel_script_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\data\\reel_script\\20260730-01.json",
+  "reel_images_dir": null,
+  "reel_audio_dir": null,
+  "reel_path": null,
+  "updated_at": "2026-07-30T06:57:09.059680+00:00"
+}
