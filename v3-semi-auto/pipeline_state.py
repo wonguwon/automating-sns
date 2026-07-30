@@ -26,6 +26,9 @@ FIELDS = (
     "content_path",
     "cover_image_path",
     "render_out_dir",
+    "reel_script_path",
+    "reel_images_dir",
+    "reel_audio_dir",
     "reel_path",
 )
 

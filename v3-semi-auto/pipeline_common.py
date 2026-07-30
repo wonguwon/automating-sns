@@ -10,6 +10,7 @@ app.py(구 버전)에 있던 공용 헬퍼(OpenAI 클라이언트, 이미지 생
 ------------------------------------------------
 """
 import json
+import shutil
 from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
@@ -44,7 +45,19 @@ TEMPLATES_DIR = HERE / "templates"
 TEMPLATE_EXAMPLE_DIRNAME = "예시"
 TEMPLATE_EXAMPLE_EXTS = (".png", ".jpg", ".jpeg", ".webp")
 
-for d in (DATA, CAND_DIR, RESEARCH_DIR, CONTENT_DIR, PIPELINE_DIR, RSS_COLLECT_DIR, ASSETS_DIR, SOURCES_DIR):
+# 릴스 제작(2026-07-30~) — 대본/장면 이미지/TTS 오디오/최종 mp4 경로.
+REEL_SCRIPT_DIR = DATA / "reel_script"
+REEL_IMAGES_DIR = DATA / "reel_images"
+REEL_AUDIO_DIR = DATA / "reel_audio"
+REEL_OUT_ROOT = HERE / "릴스"
+REEL_PHOTOS_DIR = ASSETS_DIR / "reel_photos"
+REEL_PHOTOS_INDEX = REEL_PHOTOS_DIR / "index.json"
+REEL_PHOTO_EXTS = (".png", ".jpg", ".jpeg", ".webp")
+
+for d in (
+    DATA, CAND_DIR, RESEARCH_DIR, CONTENT_DIR, PIPELINE_DIR, RSS_COLLECT_DIR, ASSETS_DIR, SOURCES_DIR,
+    REEL_SCRIPT_DIR, REEL_IMAGES_DIR, REEL_AUDIO_DIR, REEL_OUT_ROOT, REEL_PHOTOS_DIR,
+):
     d.mkdir(parents=True, exist_ok=True)
 
 
@@ -81,6 +94,121 @@ def list_template_examples(template_dir: Path) -> list[Path]:
         p for p in example_dir.iterdir()
         if p.is_file() and p.suffix.lower() in TEMPLATE_EXAMPLE_EXTS
     )
+
+
+def is_valid_template_name(name: str) -> bool:
+    """템플릿 폴더명으로 안전한지 검사한다 — 경로 조작 문자(`/`, `\\`, `..`)와 빈 값을 막는다."""
+    name = name.strip()
+    if not name or name in (".", ".."):
+        return False
+    return not any(c in name for c in ("/", "\\", "\0"))
+
+
+def create_template(name: str, html_bytes: bytes, prompt_bytes: bytes) -> Path:
+    """
+    새 템플릿 폴더(templates/<name>/)를 만들고 template.html·prompt.md를 저장한다.
+    템플릿 관리 페이지는 이 둘을 화면에서 새로 작성해주지 않는다 — 이미 만들어둔 파일을
+    업로드해서 세트로 저장하는 파일 관리 UI다(2026-07-30 사용자 결정, LIMITS 검증 로직이
+    있는 template.html을 직접 만드는 건 이 UI 범위 밖).
+    """
+    name = name.strip()
+    if not is_valid_template_name(name):
+        raise ValueError(f"템플릿 이름으로 쓸 수 없습니다: {name!r}")
+    template_dir = TEMPLATES_DIR / name
+    if template_dir.exists():
+        raise ValueError(f"이미 같은 이름의 템플릿이 있습니다: {name}")
+    template_dir.mkdir(parents=True)
+    (template_dir / "template.html").write_bytes(html_bytes)
+    (template_dir / "prompt.md").write_bytes(prompt_bytes)
+    return template_dir
+
+
+def update_template_files(
+    template_dir: Path, html_bytes: bytes | None = None, prompt_bytes: bytes | None = None
+):
+    """기존 템플릿의 template.html·prompt.md를 덮어쓴다 — 인자로 넘긴 것만 갱신한다."""
+    if html_bytes is not None:
+        (template_dir / "template.html").write_bytes(html_bytes)
+    if prompt_bytes is not None:
+        (template_dir / "prompt.md").write_bytes(prompt_bytes)
+
+
+def add_template_examples(template_dir: Path, files: list[tuple[str, bytes]]) -> list[str]:
+    """
+    예시 이미지를 템플릿의 예시/ 폴더에 저장한다. 같은 파일명이 이미 있으면 조용히 덮어써서
+    기존 예시를 잃지 않도록 "이름(1).png"처럼 번호를 붙여 저장한다.
+    실제로 저장된 파일명 목록을 돌려준다(허용 확장자가 아닌 파일은 건너뛴다).
+    """
+    example_dir = template_dir / TEMPLATE_EXAMPLE_DIRNAME
+    example_dir.mkdir(parents=True, exist_ok=True)
+    saved = []
+    for filename, data in files:
+        p = Path(filename)
+        if p.suffix.lower() not in TEMPLATE_EXAMPLE_EXTS:
+            continue
+        dest = example_dir / p.name
+        n = 1
+        while dest.exists():
+            dest = example_dir / f"{p.stem}({n}){p.suffix}"
+            n += 1
+        dest.write_bytes(data)
+        saved.append(dest.name)
+    return saved
+
+
+def delete_template_example(example_path: Path):
+    """예시 이미지 한 장을 삭제한다."""
+    example_path.unlink(missing_ok=True)
+
+
+def delete_template(template_dir: Path):
+    """템플릿 폴더 전체(template.html·prompt.md·예시/)를 삭제한다. 되돌릴 수 없다."""
+    shutil.rmtree(template_dir)
+
+
+# ============================================================
+# 릴스 사진 라이브러리 — assets/reel_photos/ + index.json(파일명↔설명).
+# 대본 생성 시 이 목록(파일명+설명)을 GPT에 함께 넘겨, 장면마다 기존 사진을 재사용할지
+# 새로 생성할지 GPT가 직접 고르게 한다(2026-07-30 사용자 결정 — 짤 이미지도 미리 넣어두고
+# 설명을 함께 관리).
+# ============================================================
+def load_reel_photo_index() -> list[dict]:
+    """index.json을 읽는다. 파일이 실제로 존재하는 항목만 돌려준다(목록과 실제 파일이
+    어긋나는 걸 방지)."""
+    if not REEL_PHOTOS_INDEX.exists():
+        return []
+    entries = json.loads(REEL_PHOTOS_INDEX.read_text(encoding="utf-8"))
+    return [e for e in entries if (REEL_PHOTOS_DIR / e["file"]).exists()]
+
+
+def _save_reel_photo_index(entries: list[dict]):
+    REEL_PHOTOS_INDEX.write_text(json.dumps(entries, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def add_reel_photo(filename: str, data: bytes, description: str) -> str:
+    """사진 한 장을 라이브러리에 추가한다. 같은 파일명이 있으면 번호를 붙여 저장한다
+    (템플릿 예시 이미지 저장 방식과 동일). 실제로 저장된 파일명을 돌려준다."""
+    p = Path(filename)
+    if p.suffix.lower() not in REEL_PHOTO_EXTS:
+        raise ValueError(f"지원하지 않는 이미지 형식입니다: {p.suffix}")
+    dest = REEL_PHOTOS_DIR / p.name
+    n = 1
+    while dest.exists():
+        dest = REEL_PHOTOS_DIR / f"{p.stem}({n}){p.suffix}"
+        n += 1
+    dest.write_bytes(data)
+
+    entries = load_reel_photo_index()
+    entries.append({"file": dest.name, "description": description.strip()})
+    _save_reel_photo_index(entries)
+    return dest.name
+
+
+def delete_reel_photo(filename: str):
+    """사진 한 장과 index.json의 해당 항목을 삭제한다."""
+    (REEL_PHOTOS_DIR / filename).unlink(missing_ok=True)
+    entries = [e for e in load_reel_photo_index() if e["file"] != filename]
+    _save_reel_photo_index(entries)
 
 
 CONTENT_JSON_USER_PROMPT = """오늘 채택된 소재 ID: {content_id}
@@ -182,8 +310,132 @@ def run_content_json_prompt(
     return content, raw
 
 
+# ============================================================
+# 릴스 대본 생성 — 딥리서치 조사 노트 + 사진 라이브러리 목록 + 사용자 방향성(의견)을 참고해
+# 줄 단위(화자·대사·장면) JSON 대본을 만든다(2026-07-30 개정).
+# 대화체(캐릭터1/캐릭터2)와 대본 예시 참고는 제거했다 — 처음부터 대화형은 무리였고, 예시로
+# 스타일을 흉내내기보다 "사실(조사 노트) + 의견(사용자가 입력하는 방향성)"을 결합해 쓰게 하는
+# 편이 내용도 더 명확하고 저작권도 안전하다는 판단(사용자 결정).
+# ============================================================
+REEL_SCRIPT_SYSTEM_PROMPT = """당신은 짧고 명료한 인스타그램 릴스(쇼츠) 대본을 쓰는 작가다.
+
+목표: 딥리서치 조사 노트에 있는 사실을 바탕으로, 소리 내어 읽었을 때 20~30초 분량의 대본을
+쓴다. 화자는 항상 나레이션 1명이다(대화체·캐릭터 구분 없음).
+
+분량 기준 (가장 중요 — 반드시 지켜라. 실측: 이 프로젝트 타입캐스트 TTS 기준 약 4.5~5자/초):
+- 모든 줄의 대사(text)를 합친 글자 수(공백 포함)가 100~150자를 넘지 않게 쓴다.
+- 줄 수는 6~10줄 내외, 각 줄은 10~20자 정도의 한 호흡 길이로 쓴다.
+- 분량 기준과 아래 규칙이 충돌하면 분량 기준을 우선한다 — 조사 노트의 내용을 다 담으려 하지
+  말고, 가장 임팩트 있는 사실 2~3개만 골라 압축해서 전달한다.
+
+내용 구성:
+- 이 소재에서 가장 중요한 부분(핵심 사실·왜 중요한지)만 골라 명확하게 전달한다. 군더더기
+  설명이나 배경 설명은 과감히 생략한다.
+- "방향성/의견"이 주어지면, 사실(조사 노트)은 그대로 유지하되 그 방향성이 제안하는 관점·논조를
+  반영해서 문장을 새로 쓴다 — 사실과 의견을 결합해 쓰면 원문을 그대로 옮기는 게 아니므로
+  저작권 문제로부터도 안전하다. 방향성이 없으면 소재에 맞는 논조를 스스로 정한다.
+
+규칙:
+- 사실(숫자·날짜·기관명)은 조사 노트에 있는 것만 쓰고 새로 지어내지 않는다.
+- 저작권: 원문 문장을 그대로 옮기지 않고 새로 쓴다. 직접 인용이 필요하면 따옴표로 표시하고
+  화자를 밝힌다.
+
+제목(title): 화면 상단에 고정으로 표시할 제목을 두 줄로 만든다 — 1번째 줄은 상황·맥락을 짧게
+던지고, 2번째 줄은 그 핵심·한방을 강조하는 문구로 쓴다(각 줄 6~14자 내외, 두 줄이 자연스럽게
+이어지는 한 문장이거나 앞뒤 호응이 되게 쓴다). 2번째 줄은 화면에서 강조색(노란색)으로 표시되니
+가장 임팩트 있는 부분을 2번째 줄에 배치한다.
+
+장면(scene) 구성 — 이미지 생성 비용과 화면 산만함을 줄이기 위해, 장면은 대사 줄보다 훨씬 적게
+잡는다:
+- 전체 장면은 2~4개로 제한한다. 비슷한 맥락의 여러 줄은 같은 장면 하나를 공유해서, 그 줄들이
+  재생되는 동안 같은 이미지가 유지되게 한다.
+- 각 장면에는 화면을 다이나믹하게 만들 카메라 움직임(motion)을 하나 지정한다: "zoom_in"(서서히
+  확대), "zoom_out"(서서히 축소), "pan_left"(좌로 서서히 이동), "pan_right"(우로 서서히 이동),
+  "static"(움직임 없음) 중 하나.
+- "보유 사진 목록"에 어울리는 사진이 있으면 그 파일명을 그대로 골라 쓰고(목록에 없는 파일명을
+  만들어내지 않는다), 없으면 새로 생성할 이미지 컨셉을 문장으로 쓴다.
+
+출력은 아래 스키마의 JSON 하나만 — 설명이나 코드펜스 없이 그대로 출력한다:
+{
+  "title_line1": "...",
+  "title_line2": "...",
+  "scenes": [
+    {
+      "visual_concept": "...",
+      "image_source": "existing 또는 generate",
+      "image_file": "보유 사진 목록에 있는 파일명 또는 null",
+      "motion": "zoom_in, zoom_out, pan_left, pan_right, static 중 하나"
+    }
+  ],
+  "lines": [
+    {"speaker": "나레이션", "text": "...", "scene_index": 0}
+  ]
+}
+scene_index는 scenes 배열의 0부터 시작하는 인덱스다. speaker는 모든 줄에서 "나레이션"으로
+통일한다.
+"""
+
+REEL_SCRIPT_USER_PROMPT = """오늘 채택된 소재 ID: {content_id}
+
+방향성/의견 ("(없음)"이면 소재에 맞는 논조를 자유롭게 정한다):
+{direction}
+
+보유 사진 목록 (기존 파일 재사용 시 이 중에서만 골라라 — 목록에 없는 파일명을 만들어내지 않는다):
+{photo_library}
+
+아래는 딥리서치 조사 노트다. 이 안에 있는 사실만 사용해서 대본을 써라.
+
+{research_note}
+"""
+
+
+def build_reel_script_prompt(
+    content_id: str, research_note: str, photo_library: list[dict], direction: str = "",
+) -> tuple[str, str]:
+    """(시스템 프롬프트, 사용자 프롬프트)를 조립한다. 사용자 프롬프트는 화면에서 보여주고
+    실행 전 수정할 수 있게 한다(카드뉴스 JSON 생성과 동일한 패턴)."""
+    if photo_library:
+        lib_text = "\n".join(f"- {e['file']}: {e['description']}" for e in photo_library)
+    else:
+        lib_text = "(등록된 사진 없음 — 모든 장면을 새로 생성해야 한다)"
+
+    user_prompt = REEL_SCRIPT_USER_PROMPT.format(
+        content_id=content_id,
+        direction=direction.strip() or "(없음)",
+        photo_library=lib_text,
+        research_note=research_note,
+    )
+    return REEL_SCRIPT_SYSTEM_PROMPT, user_prompt
+
+
+def run_reel_script_prompt(
+    client: OpenAI, system_prompt: str, user_prompt: str, content_id: str
+) -> tuple[dict | None, str]:
+    """릴스 대본 생성 프롬프트를 실행한다. (파싱된 dict 또는 None, 모델 원본 출력)을 반환한다."""
+    import re
+
+    resp = client.chat.completions.create(
+        model="gpt-5.5",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+    )
+    raw = resp.choices[0].message.content.strip()
+    cleaned = re.sub(r"^```(json)?|```$", "", raw, flags=re.MULTILINE).strip()
+
+    try:
+        script = json.loads(cleaned)
+    except json.JSONDecodeError:
+        return None, raw
+
+    script["id"] = content_id
+    return script, raw
+
+
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 ARK_API_KEY = os.environ.get("ARK_API_KEY")
+TYPECAST_API_KEY = os.environ.get("TYPECAST_API_KEY")
 # 첫 항목이 셀렉트박스 기본값이 된다 — 기본 모델은 Seedream(2026-07-29 사용자 결정, ARK_API_KEY 필요).
 IMAGE_PROVIDERS = {"Doubao-Seedream (Volcengine Ark)": "seedream", "GPT Image 2 (OpenAI)": "openai"}
 
@@ -222,12 +474,13 @@ def set_content_id(content_id: str):
     st.session_state["content_id_override"] = content_id
 
 
-def generate_cover_image_raw(
-    client: OpenAI, prompt: str, content_id: str, quality: str, provider: str = "openai"
+def _generate_image_to_path(
+    client: OpenAI, prompt: str, out_path: Path, quality: str, provider: str = "openai"
 ) -> str | None:
     """
-    화면에서 편집한 프롬프트를 그대로 이미지 생성 API에 보낸다.
-    generate.py의 generate_cover_image()는 내부에서 프롬프트를 다시 조립하므로 여기서는 쓰지 않는다.
+    화면에서 편집한 프롬프트를 그대로 이미지 생성 API에 보내 out_path에 저장한다.
+    표지 이미지(generate_cover_image_raw)와 릴스 장면 이미지(generate_scene_image_raw)가
+    저장 경로만 다르고 나머지 로직은 같아 공용으로 뺐다.
 
     provider: "openai"(기본, GPT Image 2) 또는 "seedream"(Volcengine Ark, Doubao-Seedream).
     seedream을 쓰려면 ARK_API_KEY가 .env에 있어야 한다 — 인자로 받은 client(OPENAI_API_KEY로 만든 것)는
@@ -257,8 +510,7 @@ def generate_cover_image_raw(
                 quality=quality,
             )
         item = resp.data[0]
-        ASSETS_DIR.mkdir(exist_ok=True)
-        out_path = ASSETS_DIR / f"cover-{content_id}.png"
+        out_path.parent.mkdir(parents=True, exist_ok=True)
 
         if getattr(item, "url", None):
             import urllib.request
@@ -274,6 +526,23 @@ def generate_cover_image_raw(
     except Exception as e:
         st.error(f"이미지 생성 실패: {e}")
         return None
+
+
+def generate_cover_image_raw(
+    client: OpenAI, prompt: str, content_id: str, quality: str, provider: str = "openai"
+) -> str | None:
+    """카드뉴스 표지 이미지를 assets/cover-<id>.png에 생성한다."""
+    out_path = ASSETS_DIR / f"cover-{content_id}.png"
+    return _generate_image_to_path(client, prompt, out_path, quality, provider)
+
+
+def generate_scene_image_raw(
+    client: OpenAI, prompt: str, content_id: str, scene_index: int, quality: str, provider: str = "openai"
+) -> str | None:
+    """릴스 장면 이미지를 data/reel_images/<id>/scene_<NN>.png에 생성한다. 장면 하나를 여러 줄이
+    공유하므로(2026-07-30 스키마 변경) 줄이 아니라 장면 인덱스 기준으로 저장한다."""
+    out_path = REEL_IMAGES_DIR / content_id / f"scene_{scene_index:02d}.png"
+    return _generate_image_to_path(client, prompt, out_path, quality, provider)
 
 
 ARTICLE_FETCH_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) kaltoegak-research"}
@@ -407,3 +676,90 @@ def show_json_dialog(content: dict, state_key: str):
             st.session_state[state_key] = parsed
             st.success("적용됨")
             st.rerun()
+
+
+# ============================================================
+# 타입캐스트(Typecast) TTS — 릴스 대본 한 줄을 오디오로 합성한다(2026-07-30).
+# emotion_type="smart"로 앞/뒤 줄 텍스트를 문맥으로 넘겨 감정을 자동으로 바꾼다 —
+# 대본 예시들의 "문장마다 감정이 바뀌는" 리듬을 코드로 재현하기 위한 선택.
+# ============================================================
+TYPECAST_BASE_URL = "https://api.typecast.ai"
+
+
+def list_typecast_voices() -> list[dict] | None:
+    """GET /v2/voices로 사용 가능한 음성 목록을 조회한다. 키가 없거나 호출이 실패하면 None을
+    돌려주고 화면에 에러를 보여준다 — 이 경우 화자별 voice_id는 직접 입력해야 한다."""
+    if not TYPECAST_API_KEY:
+        st.error("TYPECAST_API_KEY가 없습니다. 이 폴더의 .env 파일에 TYPECAST_API_KEY=...를 추가하세요.")
+        return None
+    try:
+        resp = requests.get(
+            f"{TYPECAST_BASE_URL}/v2/voices",
+            headers={"X-API-KEY": TYPECAST_API_KEY},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        # 공식 문서에 정확한 응답 스키마가 명시돼 있지 않아, 리스트 자체이거나
+        # {"voices": [...]} / {"data": [...]} 형태일 가능성을 모두 처리한다.
+        if isinstance(data, list):
+            return data
+        return data.get("voices") or data.get("data") or []
+    except Exception as e:
+        st.error(f"음성 목록 조회 실패: {e}")
+        return None
+
+
+# 목소리는 우선 "민욱"(Minuk, 남성/중년, ssfm-v30 감정 7종 전부 지원)으로 고정한다 — 여러
+# 목소리 중 고르는 셀렉트박스는 추후에 붙인다(2026-07-30 사용자 결정).
+REEL_DEFAULT_VOICE_ID = "tc_68f0727fd62a5934102f7ec0"
+REEL_EMOTION_PRESETS = ["normal", "happy", "sad", "angry", "whisper", "toneup", "tonedown"]
+
+
+def synthesize_reel_line(
+    text: str, voice_id: str, out_path: Path,
+    previous_text: str = "", next_text: str = "",
+    model: str = "ssfm-v30", audio_format: str = "mp3",
+    audio_tempo: float = 1.0,
+    emotion_type: str = "smart",
+    emotion_preset: str = "normal",
+    emotion_intensity: float = 1.0,
+) -> bool:
+    """
+    대본 한 줄을 타입캐스트 TTS로 합성해 out_path에 저장한다. 성공하면 True, 실패하면
+    False를 돌려주고 화면에 에러를 보여준다.
+
+    emotion_type: "smart"(문맥 기반 자동 — previous_text/next_text로 감정을 정함) 또는
+    "preset"(emotion_preset/emotion_intensity로 감정을 직접 고정).
+    audio_tempo: 0.5~2.0 배속(1.0 기본).
+    """
+    if not TYPECAST_API_KEY:
+        st.error("TYPECAST_API_KEY가 없습니다. 이 폴더의 .env 파일에 TYPECAST_API_KEY=...를 추가하세요.")
+        return False
+    if emotion_type == "preset":
+        prompt = {"emotion_type": "preset", "emotion_preset": emotion_preset, "emotion_intensity": emotion_intensity}
+    else:
+        prompt = {"emotion_type": "smart", "previous_text": previous_text, "next_text": next_text}
+    body = {
+        "voice_id": voice_id,
+        "text": text,
+        "model": model,
+        "prompt": prompt,
+        "output": {"audio_format": audio_format, "audio_tempo": audio_tempo},
+    }
+    try:
+        resp = requests.post(
+            f"{TYPECAST_BASE_URL}/v1/text-to-speech",
+            headers={"X-API-KEY": TYPECAST_API_KEY, "Content-Type": "application/json"},
+            json=body,
+            timeout=60,
+        )
+        if resp.status_code != 200:
+            st.error(f"TTS 실패({resp.status_code}): {resp.text[:300]}")
+            return False
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_bytes(resp.content)
+        return True
+    except Exception as e:
+        st.error(f"TTS 요청 실패: {e}")
+        return False

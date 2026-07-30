@@ -32,6 +32,8 @@ pages = [
     st.Page("pages/1_컨텐츠_수집.py", title="컨텐츠 수집", default=True),
     st.Page("pages/2_딥리서치.py", title="딥리서치"),
     st.Page("pages/3_카드뉴스_제작.py", title="카드뉴스 제작"),
+    st.Page("pages/4_템플릿_관리.py", title="템플릿 관리"),
+    st.Page("pages/5_릴스_제작.py", title="릴스 제작"),
 ]
 
 st.navigation(pages, position="top").run()
