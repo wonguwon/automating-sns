@@ -1,0 +1,80 @@
+{
+  "title_line1": "공기청정기 호환필터",
+  "title_line2": "유해물질 나왔다",
+  "scenes": [
+    {
+      "visual_concept": "어두운 방 안 공기청정기와 불안한 분위기, 필터 클로즈업",
+      "image_source": "generate",
+      "image_file": null,
+      "motion": "zoom_in",
+      "resolved_image_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\data\\reel_images\\20260729-06\\scene_00.png"
+    },
+    {
+      "visual_concept": "실험실 테이블 위 여러 공기청정기 호환필터와 검사 결과 그래프",
+      "image_source": "generate",
+      "image_file": null,
+      "motion": "pan_right",
+      "resolved_image_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\data\\reel_images\\20260729-06\\scene_01.png"
+    },
+    {
+      "visual_concept": "공기청정기 필터에서 붉은 경고 표시와 유해물질 아이콘이 떠오르는 장면",
+      "image_source": "generate",
+      "image_file": null,
+      "motion": "zoom_in",
+      "resolved_image_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\data\\reel_images\\20260729-06\\scene_02.png"
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "나레이션",
+      "text": "공기청정기 호환필터, 유해물질 검출?",
+      "scene_index": 0
+    },
+    {
+      "speaker": "나레이션",
+      "text": "저렴해서 저도 쓰는데 깜짝 놀랐어요.",
+      "scene_index": 0
+    },
+    {
+      "speaker": "나레이션",
+      "text": "소비자원 조사 20개 중",
+      "scene_index": 1
+    },
+    {
+      "speaker": "나레이션",
+      "text": "16개가 유해가스 기준 미달.",
+      "scene_index": 1
+    },
+    {
+      "speaker": "나레이션",
+      "text": "샤오미용 2개에선",
+      "scene_index": 2
+    },
+    {
+      "speaker": "나레이션",
+      "text": "금지물질 MIT까지 검출됬다는데...",
+      "scene_index": 2
+    },
+    {
+      "speaker": "나레이션",
+      "text": "흡입하면 해로울 수 있어서",
+      "scene_index": 2
+    },
+    {
+      "speaker": "나레이션",
+      "text": "판매중단·회수 권고까지 됬어요.",
+      "scene_index": 2
+    },
+    {
+      "speaker": "나레이션",
+      "text": "아기를 키우는 입장으로 이건 좀 무섭내요.",
+      "scene_index": 0
+    },
+    {
+      "speaker": "나레이션",
+      "text": "우리집 필터도 한번 확인해 보세요.",
+      "scene_index": 0
+    }
+  ],
+  "id": "20260729-06"
+}

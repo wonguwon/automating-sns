@@ -153,6 +153,9 @@
   "content_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\data\\content\\20260729-06.json",
   "cover_image_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\assets\\cover-20260729-06.png",
   "render_out_dir": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\카드뉴스\\20260729-06",
-  "reel_path": null,
-  "updated_at": "2026-07-29T09:54:36.562432+00:00"
+  "reel_script_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\data\\reel_script\\20260729-06.json",
+  "reel_images_dir": null,
+  "reel_audio_dir": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\data\\reel_audio\\20260729-06",
+  "reel_path": "C:\\Users\\user1\\Documents\\ai-sns\\v3-semi-auto\\릴스\\20260729-06\\reel.mp4",
+  "updated_at": "2026-07-30T08:44:51.439818+00:00"
 }
