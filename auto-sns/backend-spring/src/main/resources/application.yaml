@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: autosns
+  datasource:
+    url: jdbc:mysql://localhost:3306/auto_sns?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    # username/password는 application-local.yaml(Git 추적 제외, 로컬에서 직접 생성)에서 채운다.
+  jpa:
+    open-in-view: false
+    hibernate:
+      # 초기 개발 단계 임시 방침 — 실제 마이그레이션 도구(Flyway 등) 도입은 별도 결정 사항.
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
