@@ -1,0 +1,114 @@
+{
+  "name": "경제",
+  "_last_health_check": "2026-07-31T01:25:10.532466+00:00",
+  "feeds": [
+    {
+      "name": "연합뉴스 경제",
+      "url": "https://www.yna.co.kr/rss/economy.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "국내 경제·금융·산업 뉴스를 폭넓게 다루는 주요 통신사 피드",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-31",
+        "checked": "2026-07-31"
+      }
+    },
+    {
+      "name": "네이버 뉴스 경제",
+      "url": "https://news.naver.com/main/rss/main.naver?mode=LSD&mid=shm&sid1=101",
+      "tier": "kr",
+      "enabled": true,
+      "note": "국내 여러 매체의 경제 섹션 뉴스를 모아보기 좋은 경제뉴스 집계 피드",
+      "verified": {
+        "status": "FAIL",
+        "checked": "2026-07-31",
+        "error": "<unknown>:9:17: not well-formed (invalid token)"
+      }
+    },
+    {
+      "name": "한국경제 경제",
+      "url": "https://www.hankyung.com/feed/economy",
+      "tier": "kr",
+      "enabled": true,
+      "note": "거시경제, 정책, 산업, 금융 이슈를 경제전문지 관점에서 제공",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-31",
+        "checked": "2026-07-31"
+      }
+    },
+    {
+      "name": "중앙일보 경제",
+      "url": "https://rss.joins.com/joins_money_list.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "국내 경제정책, 금융, 부동산 등 주요 경제 뉴스를 제공",
+      "verified": {
+        "status": "FAIL",
+        "checked": "2026-07-31",
+        "error": "<unknown>:10:2: mismatched tag"
+      }
+    },
+    {
+      "name": "한겨레 경제",
+      "url": "https://www.hani.co.kr/rss/economy/",
+      "tier": "kr",
+      "enabled": true,
+      "note": "경제정책, 노동, 산업, 부동산 이슈를 함께 살피기 좋은 국내 매체 피드",
+      "verified": {
+        "status": "OK",
+        "latest": null,
+        "checked": "2026-07-31"
+      }
+    },
+    {
+      "name": "경향신문 경제",
+      "url": "https://www.khan.co.kr/rss/rssdata/economy_news.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "국내 경제정책, 금융, 소비자·산업 이슈를 추적하기 좋은 피드",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-31",
+        "checked": "2026-07-31"
+      }
+    },
+    {
+      "name": "Federal Reserve Press Releases",
+      "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+      "tier": "1",
+      "enabled": true,
+      "note": "미국 금리와 통화정책 관련 공식 발표를 확인할 수 있는 피드",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-30",
+        "checked": "2026-07-31"
+      }
+    },
+    {
+      "name": "U.S. Bureau of Labor Statistics Latest Releases",
+      "url": "https://www.bls.gov/feed/bls_latest.rss",
+      "tier": "1",
+      "enabled": true,
+      "note": "고용, 물가 등 거시경제 지표의 공식 발표를 추적하기 좋은 피드",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-29",
+        "checked": "2026-07-31"
+      }
+    },
+    {
+      "name": "BBC News Business",
+      "url": "https://feeds.bbci.co.uk/news/business/rss.xml",
+      "tier": "global",
+      "enabled": true,
+      "note": "글로벌 기업, 금융시장, 거시경제 뉴스를 영어권 관점에서 확인 가능",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-31",
+        "checked": "2026-07-31"
+      }
+    }
+  ]
+}

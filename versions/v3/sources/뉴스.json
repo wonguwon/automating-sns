@@ -1,0 +1,114 @@
+{
+  "name": "뉴스",
+  "_last_health_check": "2026-07-28T07:52:10.138921+00:00",
+  "feeds": [
+    {
+      "name": "연합뉴스 최신뉴스",
+      "url": "https://www.yna.co.kr/rss/news.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "국내 대표 통신사의 전체 최신 기사로 주요 이슈를 빠르게 포착할 수 있음",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-28",
+        "checked": "2026-07-28"
+      }
+    },
+    {
+      "name": "YTN 최신뉴스",
+      "url": "https://www.ytn.co.kr/rss/news.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "속보성 보도와 방송 뉴스 이슈 확인에 적합",
+      "verified": {
+        "status": "FAIL",
+        "checked": "2026-07-28",
+        "error": "<unknown>:45:14: not well-formed (invalid token)"
+      }
+    },
+    {
+      "name": "MBC 뉴스 전체",
+      "url": "https://imnews.imbc.com/rss/news/news_00.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "지상파 방송사의 주요 국내외 뉴스 흐름을 확인할 수 있음",
+      "verified": {
+        "status": "FAIL",
+        "checked": "2026-07-28",
+        "error": "<unknown>:41:2: mismatched tag"
+      }
+    },
+    {
+      "name": "JTBC 뉴스 속보",
+      "url": "https://fs.jtbc.co.kr/RSS/newsflash.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "방송 뉴스 기반의 속보와 주요 이슈 추적에 유용",
+      "verified": {
+        "status": "OK",
+        "latest": "2024-07-01",
+        "checked": "2026-07-28"
+      }
+    },
+    {
+      "name": "한겨레 주요기사",
+      "url": "https://www.hani.co.kr/rss/lead/",
+      "tier": "kr",
+      "enabled": true,
+      "note": "사회·정치 이슈 중심의 주요 기사 선별 피드",
+      "verified": {
+        "status": "FAIL",
+        "checked": "2026-07-28",
+        "error": "HTTP 404"
+      }
+    },
+    {
+      "name": "경향신문 전체뉴스",
+      "url": "https://www.khan.co.kr/rss/rssdata/total_news.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "국내 종합일간지의 전체 기사 흐름을 폭넓게 확인 가능",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-28",
+        "checked": "2026-07-28"
+      }
+    },
+    {
+      "name": "동아일보 전체기사",
+      "url": "https://rss.donga.com/total.xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "종합일간지 관점의 정치·사회·경제 이슈를 함께 추적 가능",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-28",
+        "checked": "2026-07-28"
+      }
+    },
+    {
+      "name": "조선일보 RSS",
+      "url": "https://www.chosun.com/arc/outboundfeeds/rss/?outputType=xml",
+      "tier": "kr",
+      "enabled": true,
+      "note": "국내 주요 종합일간지의 최신 이슈 기사 확인에 활용 가능",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-28",
+        "checked": "2026-07-28"
+      }
+    },
+    {
+      "name": "Google 뉴스 한국",
+      "url": "https://news.google.com/rss?hl=ko&gl=KR&ceid=KR:ko",
+      "tier": "aggregator",
+      "enabled": true,
+      "note": "여러 국내외 매체의 한국판 주요 뉴스를 집계해 이슈 탐지에 유용",
+      "verified": {
+        "status": "OK",
+        "latest": "2026-07-28",
+        "checked": "2026-07-28"
+      }
+    }
+  ]
+}

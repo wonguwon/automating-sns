@@ -1,0 +1,25 @@
+{
+  "candidate": {
+    "id": "20260731-03",
+    "title": "동탄·기흥·구리 거래 90% 급감",
+    "one_line": "3중 규제 확대 전후 한 달 사이 동탄구·기흥구·구리시 아파트 거래량이 91.2% 줄었다는 분석이 나왔습니다.",
+    "why_now": "부동산 규제가 실제 거래량에 어떤 충격을 줬는지 숫자로 드러난 사례라 관심도가 높습니다.",
+    "angle": "‘규제 발표 전후 30일’ 비교표로 실수요자·투자자가 체감할 변화를 정리",
+    "source": "https://www.donga.com/news/Economy/article/all/20260731/134400811/1",
+    "sources": [
+      "https://www.donga.com/news/Economy/article/all/20260731/134400811/1",
+      "https://www.khan.co.kr/article/202607311017001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    ],
+    "visual": "지역별 거래량 전후 막대그래프로 임팩트 큼"
+  },
+  "research_pairs": null,
+  "research_note_path": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\data\\research\\20260731-03.md",
+  "content_path": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\data\\content\\20260731-03.json",
+  "cover_image_path": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\assets\\cover-20260731-03.png",
+  "render_out_dir": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\카드뉴스\\20260731-03",
+  "reel_script_path": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\data\\reel_script\\20260731-03.json",
+  "reel_images_dir": null,
+  "reel_audio_dir": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\data\\reel_audio\\20260731-03",
+  "reel_path": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\릴스\\20260731-03\\reel.mp4",
+  "updated_at": "2026-07-31T05:45:30.056381+00:00"
+}

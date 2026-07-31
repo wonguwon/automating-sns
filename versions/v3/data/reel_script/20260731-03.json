@@ -1,0 +1,70 @@
+{
+  "title_line1": "동탄·기흥·구리",
+  "title_line2": "거래 91% 급감",
+  "scenes": [
+    {
+      "visual_concept": "어두운 톤의 수도권 아파트 단지, 매물 표지와 텅 빈 거리 분위기",
+      "image_source": "generate",
+      "image_file": null,
+      "motion": "zoom_in",
+      "resolved_image_path": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\data\\reel_images\\20260731-03\\scene_00.png"
+    },
+    {
+      "visual_concept": "부동산 규제 문서와 급락 그래프가 겹쳐 보이는 긴장감 있는 화면",
+      "image_source": "generate",
+      "image_file": null,
+      "motion": "pan_right",
+      "resolved_image_path": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\data\\reel_images\\20260731-03\\scene_01.png"
+    },
+    {
+      "visual_concept": "정부 의견수렴 웹페이지를 바라보는 시민의 뒷모습, 불안한 분위기",
+      "image_source": "generate",
+      "image_file": null,
+      "motion": "zoom_out",
+      "resolved_image_path": "C:\\Users\\user1\\Documents\\ai-sns\\versions\\v3\\data\\reel_images\\20260731-03\\scene_02.png"
+    }
+  ],
+  "lines": [
+    {
+      "speaker": "나레이션",
+      "text": "동탄, 기흥, 구리 3중 규제 확대 한 달 차!.",
+      "scene_index": 0
+    },
+    {
+      "speaker": "나레이션",
+      "text": "어떤 변화가 있었을까요?",
+      "scene_index": 0
+    },
+    {
+      "speaker": "나레이션",
+      "text": "아파트 거래량이 무려 91.2%나",
+      "scene_index": 1
+    },
+    {
+      "speaker": "나레이션",
+      "text": "줄었다는 분석이 나왔습니다",
+      "scene_index": 1
+    },
+    {
+      "speaker": "나레이션",
+      "text": "8.8%만 남은 셈인데..",
+      "scene_index": 1
+    },
+    {
+      "speaker": "나레이션",
+      "text": "정부의 계속되는 규제가,",
+      "scene_index": 2
+    },
+    {
+      "speaker": "나레이션",
+      "text": "정말 긍정적 효과가 있을까요?",
+      "scene_index": 2
+    },
+    {
+      "speaker": "나레이션",
+      "text": "시장은 걱정이 더 큽니다.",
+      "scene_index": 2
+    }
+  ],
+  "id": "20260731-03"
+}

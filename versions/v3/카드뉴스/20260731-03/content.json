@@ -1,0 +1,92 @@
+{
+  "id": "20260731-03",
+  "brand": "",
+  "handle": "",
+  "hook_reel": "거래가 8.8%만 남았다",
+  "cover": {
+    "headline": "동탄·기흥·구리\n거래량이 확 줄었습니다",
+    "lede": "규제 확대 전후 한 달, 91.2% 감소 분석이 나왔습니다",
+    "image_concept": "수도권 아파트 단지 앞 상가의 부동산 상담 공간, 닫힌 유리문 너머 빈 의자와 정리된 상담 테이블이 보이는 장면. 오가는 사람이 적고 거래 분위기가 갑자기 식은 듯 차분하고 긴장된 분위기",
+    "image": "file:///C:/Users/user1/Documents/ai-sns/versions/v3/assets/cover-20260731-03.png"
+  },
+  "slides": [
+    {
+      "type": "compare",
+      "eyebrow": "숫자로 보면",
+      "headline": "전후 한 달 비교,\n남은 거래는 <span class='hl'>8.8%</span>",
+      "compare": {
+        "before": {
+          "label": "이전",
+          "text": "3중 규제 확대 전 한 달 거래량을 100으로 보면"
+        },
+        "after": {
+          "label": "이후",
+          "text": "확대 후 한 달은 8.8 수준으로 계산됩니다"
+        }
+      },
+      "delta": "<span class='hl'>91.2% 감소</span>",
+      "source": "https://www.donga.com/news/Economy/article/all/20260731/134400811/1"
+    },
+    {
+      "eyebrow": "어디 이야기인가",
+      "headline": "대상은\n<span class='hl'>동탄구·기흥구·구리시</span>",
+      "beats": [
+        "후보 요약은 세 지역의 아파트 거래량을 함께 비교했습니다.",
+        "지역별 감소율이나 실제 거래 건수는 제공 자료에 없습니다."
+      ],
+      "source": "https://www.donga.com/news/Economy/article/all/20260731/134400811/1"
+    },
+    {
+      "eyebrow": "해석의 선",
+      "headline": "가격 전망까지\n넘겨짚으면 위험합니다",
+      "beats": [
+        "확인된 것은 거래량 감소율입니다.",
+        "가격 변화, 대출 영향, 투자 수요 이탈은 자료에서 확인되지 않았습니다."
+      ],
+      "source": "https://www.donga.com/news/Economy/article/all/20260731/134400811/1"
+    },
+    {
+      "eyebrow": "같은 시기 정책 논의",
+      "headline": "정책 의견 창구엔\n<span class='hl'>7476건</span>이 모였습니다",
+      "beats": [
+        "재정경제부는 2026년 7월 31일 ‘부동산토론회.kr’ 종료를 알렸습니다.",
+        "18일간 운영됐고, 30일까지 방문자는 4만3000명이었습니다."
+      ],
+      "source": "https://www.khan.co.kr/article/202607311017001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    },
+    {
+      "eyebrow": "무엇을 걱정했나",
+      "headline": "사람들이 가장 많이\n물은 건 <span class='hl'>주택금융</span>",
+      "beats": [
+        "주택금융 의견은 2943건, 전체의 39%로 가장 많았습니다.",
+        "주택공급 2381건(32%), 부동산세제 2152건(29%)이 뒤였습니다."
+      ],
+      "source": "https://www.khan.co.kr/article/202607311017001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    },
+    {
+      "eyebrow": "다음 접점",
+      "headline": "의견을 낼 길은\n아직 남았습니다",
+      "beats": [
+        "재정경제부는 접수 의견을 소관 부처가 검토해 정책 과정에 활용한다고 밝혔습니다."
+      ],
+      "points": [
+        "세제개편: 국민참여입법센터",
+        "공급·금융: 국민신문고"
+      ],
+      "source": "https://www.khan.co.kr/article/202607311017001/?utm_source=khan_rss&utm_medium=rss&utm_campaign=total_news"
+    }
+  ],
+  "cta": {
+    "headline": "숫자만 보고\n결론 내리지 마세요",
+    "lede": "확인된 수치와 빈칸을 함께 봐야 판단이 흔들리지 않습니다.",
+    "button_label": "저장하고 확인하세요 →",
+    "image": null
+  },
+  "caption": "거래량이 줄었다는 숫자는 강하지만, 그 숫자가 말하지 않는 부분도 큽니다.\n\n동탄구·기흥구·구리시 아파트 거래량은 3중 규제 확대 전후 한 달 사이 91.2% 줄었다는 분석이 나왔습니다. 다만 실제 거래 건수, 규제의 구체적 내용, 지역별 세부 감소율, 가격 변화까지는 제공 자료만으로 확인되지 않습니다.\n\n같은 시기 재정경제부의 부동산 정책 의견수렴 창구에는 7476건의 의견이 모였고, 그중 주택금융이 39%로 가장 많았습니다.\n\n부동산 뉴스는 숫자와 한계를 같이 봐야 합니다. 헷갈릴 때 다시 보도록 저장하고, 주변에도 공유해 주세요.",
+  "hashtags": [
+    "부동산뉴스",
+    "아파트거래량",
+    "동탄기흥구리",
+    "주택금융"
+  ]
+}
