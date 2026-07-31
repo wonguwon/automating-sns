@@ -1,0 +1,10 @@
+.env
+__pycache__/
+.playwright-mcp/
+.claude/settings.local.json
+.venv/
+.pytest_cache/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
