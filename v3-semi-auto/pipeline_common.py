@@ -475,12 +475,14 @@ def set_content_id(content_id: str):
 
 
 def _generate_image_to_path(
-    client: OpenAI, prompt: str, out_path: Path, quality: str, provider: str = "openai"
+    client: OpenAI, prompt: str, out_path: Path, quality: str, provider: str = "openai",
+    size_seedream: str = "1664x2496", size_openai: str = "1024x1536",
 ) -> str | None:
     """
     화면에서 편집한 프롬프트를 그대로 이미지 생성 API에 보내 out_path에 저장한다.
     표지 이미지(generate_cover_image_raw)와 릴스 장면 이미지(generate_scene_image_raw)가
-    저장 경로만 다르고 나머지 로직은 같아 공용으로 뺐다.
+    저장 경로와 목표 비율만 다르고 나머지 로직은 같아 공용으로 뺐다 — 크기는 호출자가 지정한다
+    (표지는 2:3 세로, 릴스 장면은 4:3 가로 — 2026-07-31).
 
     provider: "openai"(기본, GPT Image 2) 또는 "seedream"(Volcengine Ark, Doubao-Seedream).
     seedream을 쓰려면 ARK_API_KEY가 .env에 있어야 한다 — 인자로 받은 client(OPENAI_API_KEY로 만든 것)는
@@ -495,9 +497,9 @@ def _generate_image_to_path(
             resp = ark_client.images.generate(
                 model=SEEDREAM_MODEL,
                 prompt=prompt,
-                # Seedream은 최소 3,686,400픽셀 이상을 요구해 1024x1536(2:3)로는 400 에러가 난다.
-                # 1664x2496도 2:3 비율을 유지하면서 최소 픽셀 수를 넘긴다.
-                size="1664x2496",
+                # Seedream은 최소 3,686,400픽셀 이상을 요구한다 — 호출자가 넘기는 size가 이를
+                # 만족하는지는 호출자 책임(표지 1664x2496, 릴스 장면 2280x1710 모두 실측으로 확인됨).
+                size=size_seedream,
                 # watermark는 openai SDK의 images.generate()가 아는 파라미터가 아니라
                 # (Ark 전용 필드) extra_body로 넘겨야 요청 바디에 실제로 포함된다.
                 extra_body={"watermark": False},
@@ -506,7 +508,7 @@ def _generate_image_to_path(
             resp = client.images.generate(
                 model="gpt-image-2",
                 prompt=prompt,
-                size="1024x1536",
+                size=size_openai,
                 quality=quality,
             )
         item = resp.data[0]
@@ -536,13 +538,34 @@ def generate_cover_image_raw(
     return _generate_image_to_path(client, prompt, out_path, quality, provider)
 
 
+# 릴스 화면은 이미지를 4:3 가로형으로 중앙에 배치한다(2026-07-31 레터박스 개편). Seedream은
+# 최소 3,686,400픽셀 요구를 넉넉히 넘기는 4:3 크기(2280x1710, 실측 확인됨), GPT Image 2는 4:3
+# 프리셋이 없어 가장 가까운 가로형 프리셋(1536x1024, 3:2, 실측 확인됨)을 쓴다.
+REEL_SCENE_SIZE_SEEDREAM = "2280x1710"
+REEL_SCENE_SIZE_OPENAI = "1536x1024"
+
+# 카드뉴스 표지용 IMAGE_PROMPT_TEMPLATE(세로형 썸네일 전제, 하단 어둡게 처리 언급)을 그대로 쓰면
+# 릴스의 4:3 가로 이미지와 맞지 않아 릴스 전용으로 따로 둔다 — 카드뉴스 쪽 특정 구도 지시(인물
+# 뒷모습·클로즈업 등 다양화, 하단 여백 확보)도 릴스에는 굳이 강제하지 않는다(2026-07-31, 사용자 판단).
+REEL_IMAGE_PROMPT_TEMPLATE = """한국 뉴스 릴스(쇼츠) 영상의 배경 장면으로 쓸 사실적인 보도사진을 만들어주세요.
+
+장면: {concept}
+
+스타일: 한국에서 실제 기자가 촬영한 보도사진처럼 자연스럽고 신뢰감 있게 표현합니다. 흐린 날의 부드러운 자연광, 낮은 채도, 절제된 색감, 35mm 다큐멘터리 사진, 현실적인 인체와 건축물, 과장되지 않은 긴장감을 사용합니다. 화면 비율은 가로로 넓은 4:3 구도입니다.
+
+제외: 영화 포스터, 스톡사진 포즈, SF 인터페이스, 일러스트, 3D 렌더링, 글자, 워터마크를 제외합니다."""
+
+
 def generate_scene_image_raw(
     client: OpenAI, prompt: str, content_id: str, scene_index: int, quality: str, provider: str = "openai"
 ) -> str | None:
     """릴스 장면 이미지를 data/reel_images/<id>/scene_<NN>.png에 생성한다. 장면 하나를 여러 줄이
     공유하므로(2026-07-30 스키마 변경) 줄이 아니라 장면 인덱스 기준으로 저장한다."""
     out_path = REEL_IMAGES_DIR / content_id / f"scene_{scene_index:02d}.png"
-    return _generate_image_to_path(client, prompt, out_path, quality, provider)
+    return _generate_image_to_path(
+        client, prompt, out_path, quality, provider,
+        size_seedream=REEL_SCENE_SIZE_SEEDREAM, size_openai=REEL_SCENE_SIZE_OPENAI,
+    )
 
 
 ARTICLE_FETCH_HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) kaltoegak-research"}

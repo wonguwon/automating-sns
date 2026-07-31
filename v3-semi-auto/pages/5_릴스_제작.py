@@ -13,13 +13,13 @@ import streamlit as st
 
 from pipeline_common import (
     HERE,
-    IMAGE_PROMPT_TEMPLATE,
     IMAGE_PROVIDERS,
     MUSIC_DIR,
     MUSIC_EXTS,
     REEL_AUDIO_DIR,
     REEL_DEFAULT_VOICE_ID,
     REEL_EMOTION_PRESETS,
+    REEL_IMAGE_PROMPT_TEMPLATE,
     REEL_IMAGES_DIR,
     REEL_OUT_ROOT,
     REEL_PHOTOS_DIR,
@@ -274,7 +274,7 @@ else:
 
             prompt_key = f"reel_scene_prompt::{sid}::{si}"
             if prompt_key not in st.session_state:
-                st.session_state[prompt_key] = IMAGE_PROMPT_TEMPLATE.replace(
+                st.session_state[prompt_key] = REEL_IMAGE_PROMPT_TEMPLATE.replace(
                     "{concept}", scene.get("visual_concept", "")
                 )
             edited_scene_prompt = st.text_area(

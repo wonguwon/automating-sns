@@ -38,26 +38,32 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
 
+HERE = Path(__file__).resolve().parent
 FPS = 30
 WIDTH, HEIGHT = 1080, 1920
 # 위/아래 검은 바 — 위에는 제목(2줄), 아래에는 그 순간 대사(자막, 1~2줄)를 얹는다. 이미지는
 # 그 사이 가운데 영역에만 채운다(2026-07-30 사용자 결정 — 이미지를 화면 전체에 크게 쓰지 않는다.
 # 자막샘플/ 참고 이미지 스타일 — 제목 2줄(1번째 흰색, 2번째 강조 노란색) + 굵은 자막 1~2줄).
-TITLE_BAR_H = 300
-SUBTITLE_BAR_H = 320
-IMAGE_AREA_H = HEIGHT - TITLE_BAR_H - SUBTITLE_BAR_H
+# 수치는 실제 참고 화면 실측 기반(2026-07-31): 상단 바 452px 고정, 가운데 이미지는 4:3(가로)
+# 비율로 화면 폭을 그대로 채우고, 하단 바는 나머지(≈34%, 실측 "35% 정도"와 근접).
+TITLE_BAR_H = 452
+IMAGE_AREA_H = round(WIDTH * 3 / 4)
+SUBTITLE_BAR_H = HEIGHT - TITLE_BAR_H - IMAGE_AREA_H
 # zoompan은 원본 해상도 그대로 확대하면 계단현상이 보여서, 먼저 2배 캔버스로 키운 뒤 줌/팬한다.
 UPSCALE_W, UPSCALE_IMG_H = WIDTH * 2, IMAGE_AREA_H * 2
 ZOOM_STEP = 0.0015
 PAN_ZOOM = 1.15  # 패닝 중에는 이동할 여백을 두기 위해 약간 확대한 상태를 유지한다
-TITLE_FONTSIZE = 56
-SUBTITLE_FONTSIZE = 56
+TITLE_FONTSIZE = 99
+SUBTITLE_FONTSIZE = 68
 LINE_GAP = 18  # 제목·자막이 2줄일 때 줄 사이 여백
-SUBTITLE_MAX_CHARS = 16  # 이보다 길면 자막을 공백 기준으로 2줄로 나눈다
+TITLE_TOP_MARGIN = 185  # 스마트폰 전면 카메라(펀치홀) 위치를 피하기 위한 제목 상단 고정 여백
+SUBTITLE_RIGHT_MARGIN = 160  # 자막 오른쪽 정렬 기준 여백
+SUBTITLE_TOP_MARGIN = 40  # 자막이 사진 바로 아래 붙도록(2026-07-31) — 바 안 세로 중앙정렬 대신 상단 고정
+SUBTITLE_MAX_CHARS = 10  # 한 줄 최대 글자 수 — 이보다 길면 공백 기준으로 2줄로 나눈다
 # 한글 렌더링을 위해 폰트 파일을 직접 지정한다(fontconfig 이름 매칭에 기대지 않는다 — Windows에서
 # libass/drawtext의 폰트 이름 탐색이 불안정할 수 있어서, 항상 있는 폰트 파일 경로를 그대로 쓴다).
-# 제목·자막 모두 굵게 써달라는 요청이라 Bold 파일을 쓴다.
-FONT_PATH = Path(r"C:\Windows\Fonts\malgunbd.ttf")
+# 제목·자막 모두 프리텐다드 Black(assets/fonts/, 2026-07-31 ExtraBold에서 변경)을 쓴다.
+FONT_PATH = HERE / "assets" / "fonts" / "Pretendard-Black.otf"
 
 
 def ffmpeg_escape_path(path: Path) -> str:
@@ -81,11 +87,9 @@ def wrap_two_lines(text: str, max_chars: int) -> list[str]:
     return [line1, line2] if line1 and line2 else [text]
 
 
-def stacked_line_ys(bar_top: int, bar_h: int, n_lines: int, fontsize: int, gap: int) -> list[int]:
-    """bar_top~bar_top+bar_h 영역 안에 n_lines줄을 세로 중앙 정렬로 쌓을 때 각 줄의 y좌표."""
+def top_aligned_line_ys(top: int, n_lines: int, fontsize: int, gap: int) -> list[int]:
+    """top에서 시작해 n_lines줄을 아래로 이어붙일 때 각 줄의 y좌표(위쪽 고정 정렬)."""
     line_h = fontsize + gap
-    block_h = n_lines * line_h - gap
-    top = bar_top + (bar_h - block_h) // 2
     return [top + i * line_h for i in range(n_lines)]
 
 
@@ -224,7 +228,7 @@ def build_reel(script_path: Path, audio_dir: Path, out_path: Path, bgm_path: Pat
         ]
         title_colors = ["white", "yellow"]
         if title_lines:
-            ys = stacked_line_ys(0, TITLE_BAR_H, len(title_lines), TITLE_FONTSIZE, LINE_GAP)
+            ys = top_aligned_line_ys(TITLE_TOP_MARGIN, len(title_lines), TITLE_FONTSIZE, LINE_GAP)
             for idx, (txt, y) in enumerate(zip(title_lines, ys)):
                 title_file = tmp / f"title_{idx}.txt"
                 title_file.write_text(txt.strip(), encoding="utf-8")
@@ -232,7 +236,7 @@ def build_reel(script_path: Path, audio_dir: Path, out_path: Path, bgm_path: Pat
                 color = title_colors[idx] if idx < len(title_colors) else "white"
                 filters.append(
                     f"[{cur_label}]drawtext=fontfile='{font_escaped}':textfile='{ffmpeg_escape_path(title_file)}':"
-                    f"fontsize={TITLE_FONTSIZE}:fontcolor={color}:x=(w-text_w)/2:y={y}[{out_label}]"
+                    f"expansion=none:fontsize={TITLE_FONTSIZE}:fontcolor={color}:x=(w-text_w)/2:y={y}[{out_label}]"
                 )
                 cur_label = out_label
 
@@ -241,14 +245,16 @@ def build_reel(script_path: Path, audio_dir: Path, out_path: Path, bgm_path: Pat
             start, end = cum_time, cum_time + durations[i]
             cum_time = end
             sublines = wrap_two_lines(line.get("text", ""), SUBTITLE_MAX_CHARS)
-            ys = stacked_line_ys(HEIGHT - SUBTITLE_BAR_H, SUBTITLE_BAR_H, len(sublines), SUBTITLE_FONTSIZE, LINE_GAP)
+            ys = top_aligned_line_ys(
+                TITLE_BAR_H + IMAGE_AREA_H + SUBTITLE_TOP_MARGIN, len(sublines), SUBTITLE_FONTSIZE, LINE_GAP
+            )
             for j, (txt, y) in enumerate(zip(sublines, ys)):
                 line_file = tmp / f"subtitle_{i:02d}_{j}.txt"
                 line_file.write_text(txt, encoding="utf-8")
                 out_label = f"vsub{i}_{j}"
                 filters.append(
                     f"[{cur_label}]drawtext=fontfile='{font_escaped}':textfile='{ffmpeg_escape_path(line_file)}':"
-                    f"fontsize={SUBTITLE_FONTSIZE}:fontcolor=white:x=(w-text_w)/2:y={y}:"
+                    f"expansion=none:fontsize={SUBTITLE_FONTSIZE}:fontcolor=white:x=w-{SUBTITLE_RIGHT_MARGIN}-text_w:y={y}:"
                     f"enable='between(t,{start:.3f},{end:.3f})'[{out_label}]"
                 )
                 cur_label = out_label
