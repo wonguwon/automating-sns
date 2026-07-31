@@ -114,6 +114,11 @@ if "group_select_override" in st.session_state:
 
 groups = list_groups()
 
+# 증시 정보처럼 시간이 중요한 그룹은 24시간보다 짧은 범위로 수집해야 할 때가 있어(2026-07-31),
+# RSS 수집 시간 범위를 고를 수 있게 한다 — 실제로 시간 범위를 쓰는 건 "RSS 수집" 버튼이라
+# 셀렉트박스도 그 옆에 둔다(그룹 선택 옆 "가져오기"는 그룹을 불러오기만 할 뿐 수집을 하지 않음).
+RSS_HOURS_OPTIONS = {"1시간": 1, "3시간": 3, "6시간": 6, "12시간": 12, "24시간": 24, "48시간": 48}
+
 if not groups:
     st.info("리소스 그룹이 없습니다. 위에서 새 그룹을 만드세요.")
 else:
@@ -199,9 +204,19 @@ if not loaded_group_path:
 elif enabled_count == 0:
     st.info("불러온 그룹에 활성화된(enabled) 피드가 없습니다 — 위 목록에서 최소 1개를 켜세요.")
 
-if st.button("RSS 수집", type="primary", disabled=enabled_count == 0):
-    with st.spinner(f"활성 피드 {enabled_count}개에서 최근 24시간 수집 중..."):
-        items = collect_group_items(loaded_group_path)
+collect_row = st.columns([3, 1], vertical_alignment="bottom")
+with collect_row[0]:
+    hours_label = st.selectbox(
+        "수집 시간 범위", list(RSS_HOURS_OPTIONS), index=4, key="rss_hours_select"
+    )
+with collect_row[1]:
+    do_collect = st.button("RSS 수집", type="primary", disabled=enabled_count == 0)
+
+hours = RSS_HOURS_OPTIONS.get(hours_label, 24)
+
+if do_collect:
+    with st.spinner(f"활성 피드 {enabled_count}개에서 최근 {hours_label} 수집 중..."):
+        items = collect_group_items(loaded_group_path, hours=hours)
         out_path = save_rss_collection(loaded_group_path, items)
     st.session_state["rss_items"] = items
     st.session_state["rss_items_path"] = str(out_path)
