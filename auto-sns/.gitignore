@@ -8,3 +8,15 @@ __pycache__/
 .vscode/
 .DS_Store
 Thumbs.db
+
+# storage/ 런타임 산출물 (services 실행 결과 — 소스 자료인 templates/, assets/fonts/는 제외)
+storage/candidates/
+storage/content/
+storage/pipeline/
+storage/reel_audio/
+storage/reel_images/
+storage/reel_script/
+storage/research/
+storage/outputs/cardnews/
+storage/outputs/reel/
+storage/assets/cover-*.png
