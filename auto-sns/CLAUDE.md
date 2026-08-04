@@ -68,11 +68,13 @@ React + Spring Boot + MySQL + Python Worker 기반 서비스 구조로 이전하
 ## 위키 갱신 원칙
 
 - 작업 종료 시, 장기적으로 유효한 변화가 있을 때만 위키를 갱신한다.
-- 현재 진행 상태가 바뀌면 `wiki/current.md`를 갱신한다.
-- 확정된 결정이 생기면 `wiki/decisions.md`를 갱신한다.
-- 다음 작업 순서가 바뀌면 `wiki/roadmap.md`를 갱신한다.
+- `wiki/current.md`는 다음 작업자가 바로 이어받기 위한 현재 상태 문서다.
+- 확정된 결정은 `wiki/decisions.md`에 기록한다.
+- 다음 작업 순서가 바뀌면 `wiki/roadmap.md`에 반영한다.
 - 시행착오나 방향 전환 이유가 있으면 `wiki/retrospective.md`에 남긴다.
+- 날짜별 짧은 작업 기록은 `wiki/work-log.md`에 남긴다.
 - 일회성 디버깅 로그와 대화 전문은 위키에 저장하지 않는다.
+
 
 ## 작업 종료 시 보고
 

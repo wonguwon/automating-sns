@@ -1,5 +1,5 @@
 ---
-description: 세션 시작 — CLAUDE.md와 wiki(context/decisions/roadmap)를 읽고 현재 상태·확정 결정을 요약한다. 파일을 수정하지 않는다.
+description: 세션 시작 — CLAUDE.md와 wiki(context/current/decisions/roadmap)를 읽고 현재 상태·루프 상태·확정 결정을 요약한다. 파일을 수정하지 않는다.
 ---
 
 # 세션 시작
@@ -11,12 +11,14 @@ description: 세션 시작 — CLAUDE.md와 wiki(context/decisions/roadmap)를 �
 1. 다음 문서를 순서대로 읽는다.
    - `CLAUDE.md`
    - `wiki/context.md`
+   - `wiki/current.md`
    - `wiki/decisions.md`
    - `wiki/roadmap.md`
 2. 다음을 간단히 정리해 사용자에게 보고한다.
-   - 현재 프로젝트 상태 (context.md 기준)
-   - 이미 확정된 결정 (decisions.md 기준, 있다면 이번 작업과 관련된 항목을 특히 짚는다)
-   - 다음 로드맵 단계 (roadmap.md 기준)
+   - 현재 프로젝트 상태 (`context.md` 기준)
+   - 현재 루프 상태와 다음 실행 후보 (`current.md` 기준)
+   - 이미 확정된 결정 (`decisions.md` 기준, 있다면 이번 작업과 관련된 항목을 특히 짚는다)
+   - 다음 로드맵 단계 (`roadmap.md` 기준)
 3. CLAUDE.md의 "사실 판단 우선순위"를 적용한다. 위키 내용이 실제 코드나 최근 실행 결과와 다르다고 판단되면, 코드/실행 결과를 우선하고 그 차이를 보고에 함께 짚는다 (이 시점에서 위키를 직접 고치지는 않는다 — 갱신 제안은 `/session-end`에서 다룬다).
 4. 이번 세션에서 특히 주의해야 할 기존 결정이나 제약(예: 아직 건드리면 안 되는 데이터/기능)이 있으면 별도로 강조해 알려준다.
 
